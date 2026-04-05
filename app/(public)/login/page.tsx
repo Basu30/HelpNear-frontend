@@ -175,7 +175,9 @@ const Login = () => {
                             {/* ROLE SELECTOR */}
                             <select 
                                 value={role}
-                                onChange={(e) => setRole(e.target.value as 'customer' | 'provider')}>
+                                onChange={(e) => setRole(e.target.value as 'customer' | 'provider')}
+                                className="border rounded px-2 py-1"
+                            >
                                 <option value='customer'>Customer</option>
                                 <option value='provider'>Provider</option>
                             </select>
@@ -191,7 +193,7 @@ const Login = () => {
                     <div className="text-center">
                         <button 
                             type="submit" 
-                            className="bg-[#0b62c4f5] rounded-md text-white px-10 py-2 hover:bg-blue-500 active:scale-98"
+                            className=" bg-[#0b62c4f5] rounded-md text-white px-10 py-2 hover:bg-blue-500 active:scale-98"
                             onClick={handleRegister}
                         >
                             {loading ? 'Registering' : 'Register'}

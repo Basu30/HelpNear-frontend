@@ -39,7 +39,7 @@ type ApiError = {
     error: string
 }
 
-// ----------------------------- HELPER --------------------------------------------------------
+// ----------------------------- HELPER ----------------------------------------------------
   /* 
     What: checks if response is ok, parses JSON, throws on error
     Why: every fetch call needs the same error checking logic this helper does it once -- used by all functions below
