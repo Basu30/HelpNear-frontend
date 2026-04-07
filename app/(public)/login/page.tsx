@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser, registerUser } from "@/services/auth.service";
 import { useAuth } from "@/lib/auth-context";
+import Image from "next/image";
 
 const Login = () => {
     const { login } = useAuth();
@@ -96,10 +97,30 @@ const Login = () => {
                     </h1>
                     <div className="">
                         <div className="flex justify-center gap-4">
-                            <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">G+</div>
-                            <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">F</div>
+                            <div>
+                                <Image
+                                    src={'/images/google.png'}
+                                    alt="Google"
+                                    width={40}
+                                    height={30}
+                                    className="cursor-pointer  active:scale-98 border-1 text-center rounded "
+                                />
+                            </div>
+                            <Image
+                                    src={'/images/facebook.png'}
+                                    alt="Google"
+                                    width={40}
+                                    height={30}
+                                    className="cursor-pointer active:scale-98 border-1 text-center rounded "
+                                />
+                            <Image
+                                src={'/images/linkedin.png'}
+                                alt="Google"
+                                width={40}
+                                height={30}
+                                className="cursor-pointer active:scale-98 border-1 text-center rounded "
+                            />
                             <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">G</div>
-                            <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">In</div>
                         </div>
                         <p className="text-center mb-2 mt-4">or use your email password</p>
                         <div className="grid grid-rows-2 justify-center gap-3">
@@ -143,10 +164,30 @@ const Login = () => {
                     </h1>
                     <div className="">
                         <div className="flex justify-center gap-4">
-                            <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">G+</div>
-                            <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">F</div>
+                            <div>
+                                <Image
+                                    src={'/images/google.png'}
+                                    alt="Google"
+                                    width={40}
+                                    height={30}
+                                    className="cursor-pointer active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
+                                />
+                            </div>
+                            <Image
+                                src={'/images/facebook.png'}
+                                alt="Google"
+                                width={40}
+                                height={30}
+                                className="cursor-pointer active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
+                            />
+                            <Image
+                                src={'/images/linkedin.png'}
+                                alt="Google"
+                                width={40}
+                                height={30}
+                                className="cursor-pointer hover:bg-gray-200 active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
+                            />
                             <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">G</div>
-                            <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">In</div>
                         </div>
                         <p className="text-center mb-2 mt-4">or use your email for registration</p>
 
