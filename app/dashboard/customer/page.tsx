@@ -1,18 +1,24 @@
 'use client'
 import Image from "next/image";
-import SideBar from "./sidebar";
+import { useState } from "react";
+
 
 export default function CustomerDashboard(){
+    const [stats, setStats] = useState({
+        jobs: 0,
+        quotes: 0,
+        bookings: 0
+    })
     
     return (
         <main className="min-h-screen flex bg-white text-black ">
-            <SideBar/>
-            <div className="flex flex-col justify-between w-full p-4">
+        
+            <div className="flex flex-col justify-between w-full md:p-4 m-2">
                 <div className="flex items-center w-full mb-8 ">
 
-                    <div className="flex flex-col w-full ml-4 -space-y-2">
-                        <h1 className="font-bold  text-black text-[2.5rem]">Hello dear, Customer! 👋</h1>    
-                        <p className="text-[1.2rem] italic text-gray-500">Welcome to your dashboard.</p>
+                    <div className="flex flex-col w-full md:ml-4 -space-y-2">
+                        <h1 className="font-bold text-black xl:text-[2.5rem] md:text-[1.5rem]">Hello dear, Customer! 👋</h1>    
+                        <p className="md:text-[1.2rem] italic text-gray-500">Welcome to your dashboard.</p>
                     </div>
 
                     <div className=" flex justify-start h-10 p-2 w-1/2 text-black rounded-xl bg-gray-200 hover:bg-gray-300 active:border-none">
@@ -30,7 +36,7 @@ export default function CustomerDashboard(){
                         />
                     </div>
                     
-                    <div className="flex w-1/2 justify-end items-center">
+                    <div className="flex md:w-1/2 justify-end items-center">
                         <Image 
                             src={'/images/notification.png'}
                             alt="Picture"
@@ -57,9 +63,9 @@ export default function CustomerDashboard(){
              
 
                 <div className="grid grid-cols-3 items-center w-full gap-8">
-                    <div className="flex justify-center items-center border-1 rounded-xl h-30">3 Jobs posted</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-30">2 Quotes reveived</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-30">1 Booking active</div> 
+                    <div className="flex justify-center items-center border-1 rounded-xl h-30">{stats.jobs} Jobs posted</div> 
+                    <div className="flex justify-center items-center border-1 rounded-xl h-30">{stats.quotes} Quotes reveived</div> 
+                    <div className="flex justify-center items-center border-1 rounded-xl h-30">{stats.bookings} Booking active</div> 
                     {/* <div className="flex justify-center items-center border-1 rounded-xl h-30">1 Booking active</div>  */}
                 </div>
                 
@@ -70,18 +76,18 @@ export default function CustomerDashboard(){
 
                 <div className="grid grid-cols-4 items-center w-full gap-8">
                     <div className="flex justify-center items-center border-1 rounded-xl  h-80">Top Categories</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl w-100 h-80">Rewards Progress</div> 
+                    <div className="flex justify-center items-center border-1 rounded-xl h-80">Rewards Progress</div> 
                     <div className="flex justify-center items-center border-1 rounded-xl h-80">Quick Actions</div> 
                     <div className="flex justify-center items-center border-1 rounded-xl h-80">1 Booking active</div> 
                 </div>    
                 
-                <footer className="flex items-center justify-between border-1 rounded-xl mt-2 px-10 h-20">
+                <footer className="flex items-center justify-between border-1 rounded-xl mt-2 md:px-10 px-2 h-20">
                     <div>
-                        <h1 className="font-bold text-xl">Need Help? We're here for you.</h1>
+                        <h1 className="font-bold md:text-xl text-sm">Need Help? We're here for you.</h1>
                     <p className="text-[0.9rem] text-black/50 italic">Visit our help center or contact our support team</p>
                     </div>
                     
-                    <button className="flex rounded-md px-4 py-1 font-bolder text-white bg-blue-500 hover:bg-blue-700 active:scale-98">Contact Support</button>
+                    <button className="flex rounded-md md:px-4 py-1 font-bolder text-white bg-blue-500 hover:bg-blue-700 active:scale-98 truncate">Contact Support</button>
                 </footer>
 
             </div>

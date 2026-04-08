@@ -138,3 +138,25 @@ export async function getJobById(jobId: string, token: string): Promise<GetJobRe
 
     return handleResponse<GetJobResponse>(res)
 }
+
+
+// -------------- SERVICE CATEGORIES -----------------------
+export type Category = {
+    id: string
+    name: string
+    slug: string
+}
+
+export type GetCategoriesResponse = {
+    categories: Category[]
+}
+
+export async function getCategories(): Promise<GetCategoriesResponse> {
+    const res = await fetch(`${BASE_URL}/category`, {
+        method: 'GET',
+        
+        credentials: 'include'
+    })
+
+    return handleResponse<GetCategoriesResponse>(res)
+}

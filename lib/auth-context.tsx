@@ -5,9 +5,10 @@
  *      without prop drillint or locaStorage reads
  * When: wraps the entire app in layout.tsx
  */
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import type { AuthUser } from "@/services/auth.service";
 import Cookies from "js-cookie";
+import { getMe } from "@/services/auth.service";
 
 /**
  * What: defines the shape of what Context provides
@@ -18,6 +19,7 @@ type AuthContextType = {
     token: string | null                              // access token
     login: (token: string, user: AuthUser) => void    // called after loginUser()
     logout: () => void                                // clears everything
+    isLoading: boolean                                // prevents flash of wrong content
 }
 
 /**
@@ -37,18 +39,61 @@ const AuthContext = createContext<AuthContextType | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<AuthUser | null>(null)
     const [token, setToken] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+
+    /**
+     * What: on app load, check if token cookie exists
+     * Why: after page refresh, React stata is gone but cookie remains
+     * When: runs once when AuthProvider first mounts
+     */
+    useEffect(() => {
+        const restoreSession = async () => {
+
+            // Read token from cookie
+            const saveToken = Cookies.get('accessToken')
+
+            if (saveToken) {
+                try {
+                    /**
+                     * What: call /auth/me with the saved token
+                     * Why: verify token is still valid + get user data
+                     */
+                    const data = await getMe(saveToken)
+                    setToken(saveToken)
+                    setUser(data.user)
+                } catch (err) {
+                    /**
+                     * What: token exists but is invalid/expired
+                     * Why: clear it so user gets redirected to login
+                     */
+                    Cookies.remove('accessToken')
+                    setToken(null)
+                    setUser(null)
+                }
+            }
+            /**
+             * What: session restore attempt is done
+             * Why: now pages can safely ckeck if user is logged in
+             */
+            setIsLoading(false)
+        }
+        restoreSession()
+    }, [])  // empty array = run once on mount
 
     /**
      * What: called by LoginPage AFTER loginUser() succeeds
      * Why: stores the result in context so whole app knows who is logged in 
      * When: called once on successful login
      */
-    const login = (token: string, user: AuthUser) => {
+    const login = (token: string, user: AuthUser): void => {
         setUser(user)
         setToken(token)
 
         // Also store in cookie so middleware can read it
-        Cookies.set('accessToken', token)
+        Cookies.set('accessToken', token, {
+            expires: 1 / 96,
+            sameSite: 'strict',
+        })
     }
 
     /**
@@ -56,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      * Why: on logout, no component should have access to user/token
      * When: called by logout button anywhere in the app
      */
-    const logout = () => {
+    const logout = (): void => {
         setUser(null)
         setToken(null)
 
@@ -69,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      * When: renders once - wraps the entire app
      */
     return (
-        <AuthContext.Provider value={{ user, token, login, logout }}>
+        <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     )
