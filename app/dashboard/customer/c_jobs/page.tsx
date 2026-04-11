@@ -106,7 +106,14 @@ export default function AllJobs() {
                                         <p className="font-medium text-gray-800">${job.budget_max}</p>
                                     </div>
 
-                                    <div className="bg-gray-100 rounded-xl p-3 col-span-2">
+                                    <div className="bg-gray-100 rounded-xl p-3 col-span-">
+                                        <p className="text-gray-400 text-xs mb-1">Preferred Date</p>
+                                        <p className="font-medium text-gray-800">
+                                        {job.preferred_date || "Flexible"}
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-gray-100 rounded-xl p-3 col-span-">
                                         <p className="text-gray-400 text-xs mb-1">Preferred Time</p>
                                         <p className="font-medium text-gray-800">
                                         {job.preferred_time || "Flexible"}

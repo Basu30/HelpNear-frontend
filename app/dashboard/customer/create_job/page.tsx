@@ -14,7 +14,7 @@ const CreateJob = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
-    const [images, setImages] = useState<File[]>([]);
+    // const [images, setImages] = useState<File[]>([]);
 
     // FORM STATE
     const [formData, setFormData] = useState({
@@ -66,7 +66,6 @@ const CreateJob = () => {
             }, 
                 token!
             )
-            console.log('create job res', res)
 
             router.push('/dashboard/customer/c_jobs')
         } catch (err) {
@@ -77,27 +76,27 @@ const CreateJob = () => {
     }
 
     // IMAGE HANDLER
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
+    // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     if (!e.target.files) return;
 
-        const files = Array.from(e.target.files);
+    //     const files = Array.from(e.target.files);
 
-        // Limit (optional)
-        if (images.length + files.length > 5) {
-            alert("Max 5 images allowed");
-            return;
-        }
+    //     // Limit (optional)
+    //     if (images.length + files.length > 5) {
+    //         alert("Max 5 images allowed");
+    //         return;
+    //     }
 
-        setImages((prev) => [...prev, ...files]);
-    };
+    //     setImages((prev) => [...prev, ...files]);
+    // };
 
-    const removeImage = (index: number) => {
-        setImages((prev) => prev.filter((_, i) => i !== index));
-    };
+    // const removeImage = (index: number) => {
+    //     setImages((prev) => prev.filter((_, i) => i !== index));
+    // };
  
     return (
-        <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center text-black">
-            <div className="w-full max-w-4xl h-240 overflow-auto no-scrollbar">
+        <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-200 to-indigo-100 flex items-center justify-center text-black">
+            <div className="w-full max-w-4xl">
                 <div className="bg-white/90 backdrop-blur-xl border border-white/60 shadow-2xl rounded-[2rem] overflow-hidden">
                     
                     <div className="px-6 md:px-10 pt-4 pb-4 border-b border-slate-200">
@@ -123,6 +122,7 @@ const CreateJob = () => {
                                     onChange={handleChange}
                                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition"
                                 >
+                                    <option value="">Select a category</option>
                                     {categories.map((cat) => (
                                         <option key={cat.id} value={cat.id}>
                                             {cat.name}
@@ -241,7 +241,7 @@ const CreateJob = () => {
                                 />
                             </div>
                         </div>
-
+{/* 
                         <div className="space-y-3">
                             <label className="block text-sm font-semibold text-slate-700">
                                 Job Images
@@ -273,7 +273,7 @@ const CreateJob = () => {
                             </div>
 
                             {/* Preview */}
-                            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+                            {/* <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                                 {images.map((img, index) => (
                                     <div
                                         key={index}
@@ -283,10 +283,10 @@ const CreateJob = () => {
                                             src={URL.createObjectURL(img)}
                                             alt="preview"
                                             className="w-full h-24 object-cover"
-                                        />
+                                        /> */}
 
                                         {/* Remove button */}
-                                        <button
+                                        {/* <button
                                             type="button"
                                             onClick={() => removeImage(index)}
                                             className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
@@ -295,8 +295,8 @@ const CreateJob = () => {
                                         </button>
                                     </div>
                                 ))}
-                            </div>
-                        </div>
+                            </div> */}
+                        {/* </div> */} 
 
                         {error && (
                             <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
@@ -314,12 +314,12 @@ const CreateJob = () => {
                                 {loading ? "Posting..." : "Post Job"}
                             </button>
 
-                            <button
+                            {/* <button
                                 type="button"
                                 className="w-full sm:w-auto px-8 py-3 rounded-2xl border border-slate-300 bg-white text-slate-700 font-semibold hover:bg-slate-50 transition"
                             >
                                 Save Draft
-                            </button>
+                            </button> */}
                         </div>
                     </form>
                 </div>

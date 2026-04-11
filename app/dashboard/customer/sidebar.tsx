@@ -13,6 +13,10 @@ const SideBar = () => {
     const router = useRouter()
 
     const handleLogout = () => {
+        const confirm = window.confirm('Confirm to log out!')
+        if (!confirm) {
+            return
+        }
         logout()
 
         router.push('/login')

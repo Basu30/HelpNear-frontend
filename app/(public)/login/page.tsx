@@ -101,24 +101,24 @@ const Login = () => {
                                 <Image
                                     src={'/images/google.png'}
                                     alt="Google"
-                                    width={40}
+                                    width={30}
                                     height={30}
-                                    className="cursor-pointer  active:scale-98 border-1 text-center rounded "
+                                    className="w-auto h-auto cursor-pointer  active:scale-98 border-1 text-center rounded "
                                 />
                             </div>
                             <Image
                                     src={'/images/facebook.png'}
                                     alt="Google"
-                                    width={40}
+                                    width={30}
                                     height={30}
-                                    className="cursor-pointer active:scale-98 border-1 text-center rounded "
+                                    className="w-auto h-auto cursor-pointer active:scale-98 border-1 text-center rounded "
                                 />
                             <Image
                                 src={'/images/linkedin.png'}
                                 alt="Google"
-                                width={40}
+                                width={30}
                                 height={30}
-                                className="cursor-pointer active:scale-98 border-1 text-center rounded "
+                                className="w-auto h-auto cursor-pointer active:scale-98 border-1 text-center rounded "
                             />
                             <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">G</div>
                         </div>
@@ -168,24 +168,24 @@ const Login = () => {
                                 <Image
                                     src={'/images/google.png'}
                                     alt="Google"
-                                    width={40}
+                                    width={30}
                                     height={30}
-                                    className="cursor-pointer active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
+                                    className="w-auto h-auto cursor-pointer active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
                                 />
                             </div>
                             <Image
                                 src={'/images/facebook.png'}
                                 alt="Google"
-                                width={40}
+                                width={30}
                                 height={30}
-                                className="cursor-pointer active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
+                                className="w-auto h-auto cursor-pointer active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
                             />
                             <Image
                                 src={'/images/linkedin.png'}
                                 alt="Google"
-                                width={40}
+                                width={30}
                                 height={30}
-                                className="cursor-pointer hover:bg-gray-200 active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
+                                className="w-auto h-auto cursor-pointer hover:bg-gray-200 active:scale-98 text-center rounded shadow-[0px_1px_5px_2px_rgba(0,0,0,0.2)]"
                             />
                             <div className="cursor-pointer hover:bg-gray-200 active:scale-98 border-1 w-1/7 text-center rounded ">G</div>
                         </div>
