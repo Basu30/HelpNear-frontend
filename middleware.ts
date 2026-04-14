@@ -84,6 +84,9 @@ export function middleware(request: NextRequest) {
  *      images, fonts, API calls - very slow and unnecessary
  * matcher: array of path patterns to match
  */
-export const confit = {
-    matcher: ['/dashboard/:path*', '/login']
+export const confiG = {
+    matcher: [
+        '/dashboard/:path*', 
+        '/login'
+    ]
 }
