@@ -1,5 +1,12 @@
 'use client'
+
 import Image from "next/image"
+import type { ProviderProfile } from "@/types/providerProfile"
+import { useEffect, useState } from "react"
+import { useAuth } from "@/lib/auth-context"
+import { ownProfile, updateCategories, updateProfile } from "@/services/provider.service"
+import { Category, getCategories } from "@/services/jobs.service"
+
 
 const Badges = [
     { id: '1', badgeName: 'Reliable'},
@@ -27,11 +34,97 @@ const Experience = [
 ]
 
 export default function ProviderDashboard(){
+    const {user, token, isLoading } = useAuth();
+
+    // PROFILE DATA FROM API
+    const [profile, setProfile] = useState<ProviderProfile | null>(null)
+
+    // EDIT MODE TOGGLE
+    const [isEditing, setIsEditing] = useState(false)
+
+    // FORM DATA - PRE-FILLED WHEN ENTERING EDIT MODE
+    const [formData, setFormData] = useState({
+        bio: '',
+        experience_years: '',
+        city: '',
+        district: ''
+    });
+
+    // CATEGORIES
+    const [categories, setCategories] = useState<Category[]>([])
+    const [selectCategories, setSelectCategories] = useState<string[]>([])
     
+    // UI
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState<string | null>(null)
+
+    useEffect(() => {
+        if(isLoading || !token) return
+
+        Promise.all([
+            ownProfile(token),
+            getCategories(),
+        ])
+          .then(([ profileData, categoriesData ]) => {
+            setProfile(profileData.profile)
+            setCategories(categoriesData.categories)
+
+                // PRE-FILL FORM CURRENT VALUES
+            setFormData({
+                bio: profileData.profile.bio ?? '',
+                experience_years: String(profileData.profile.experience_years ?? ''),
+                city: profileData.profile.city ?? '',
+                district: profileData.profile.district ?? '',
+            })
+          })
+          
+          .catch(err => setError( err.message ))
+          .finally(() => setLoading(false))
+    }, [isLoading, token]);
+
+
+    // SAVE HANDLER
+    const handleSave = async () => {
+        setSaving(true)
+        setError(null)
+        setSuccess(null)
+
+        try {
+            await Promise.all([
+                updateProfile({
+                    ...formData,
+                    experience_years: formData.experience_years ? 
+                    Number(formData.experience_years)
+                    : undefined,
+                }, token!),
+                updateCategories(selectCategories, token!),
+            ])
+
+            setSuccess('Profile updated successfully')
+            setIsEditing(false)
+
+            // REFRESH PROFILE DATA
+            const updated = await ownProfile(token!)
+            setProfile(updated.profile)
+
+        } catch (err) {
+            if (err instanceof Error ) setError(err.message)
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <p className="text-gray-400">Loading profile...</p>
+        </div>
+    )
     return (
-        <main className="bg-white text-black text-center">
+        <main className="h-[100vh] overflow-auto no-scrollbar bg-white text-black text-center">
             <div className="flex flex-col justify-between items-center md:p-4 m-2">
-                <div className="flex items-center w-full ">
+                <div className="flex items-center w-full justify-between">
                     <div className="flex justify-start h-10 p-2 w-1/2 text-black rounded-2xl bg-gray-200 hover:bg-gray-300 active:border-none">
                         <Image
                             src={'/images/search.png'}
@@ -58,6 +151,7 @@ export default function ProviderDashboard(){
                         <Image 
                             src={'/images/Basu3.JPEG'}
                             alt="Picture"
+                            loading="eager"
                             width={20}
                             height={20}
                             className="w-15 h-15 rounded-full mx-4 hover:bg-gray-300 active:scale-97"
@@ -72,32 +166,39 @@ export default function ProviderDashboard(){
                 </div>
 
                 {/* PROFILE */}
-                <div className="flex items-center justify-between w-9/10 text-white rounded-2xl bg-blue-500 my-4">
-                    <div className="grid grid-cols-2 items-center">
+                <div className="flex items-center md:justify-between justify-evenly md:w-9/10 w-full text-white rounded-2xl bg-blue-500 my-4">
+                    <div className="md:grid grid-cols-2 items-center p-2">
                       
                         <Image 
                             src={'/images/Basu3.JPEG'}
                             alt="Picture"
+                            loading="eager"
                             width={50}
                             height={50}
-                            className="w-35 h-35 border-white border-4 rounded-full ml-10 my-6"
+                            className="md:flex hidden w-35 h-35 border-white border-4 rounded-full ml-10 my-6"
                         />
                         
                         <div className="text-left space-y-2">
-                            <h1 className="text-[1.5rem] font-bold ">Amy Tumee</h1>
-                            <p className="text-sm">Computer repair specialist</p>
-                            <p className="text-xs">Calgary, Alberta, Canada</p>
-                            <p className="flex space-x-2">
-                                <span className="flex bg-blue-400 rounded-xl px-2 py-0.5 text-xs gap-1 items-center">
+                            <h1 className="md:text-[1.5rem] font-bold ">{user?.full_name}</h1>
+                            <p className="text-sm">Senior Cleaner</p>
+                            <p className="text-xs">
+                                {profile?.city && profile?.district 
+                                ? `${profile?.city}, ${profile?.district}` 
+                                : profile?.city ?? 'Location not set'}
+                            </p>
+                            <div className="flex space-x-2">
+                                <div className="flex bg-blue-400 rounded-xl px-0.5 py-0.5 text-xs gap-1 items-center">
+                              
                                     <Image
                                         src={'/images/star.png'}
                                         alt="Job Completed"
                                         width={20} 
                                         height={20}
-                                        className="w-1/8 h-auto"
-                                    />
-                                    4.8 (120 reviews)
-                                </span>
+                                        className="md:w-1/8 h-auto ml-1"
+                                    /> 
+                                    {profile?.average_rating} - ({profile?.total_reviews} reviews)
+                               
+                                </div>
                                 <span className="flex items-center bg-blue-400 rounded-xl px-2 text-xs gap-1">
                                     <Image
                                         src={'/images/protect.png'}
@@ -106,26 +207,105 @@ export default function ProviderDashboard(){
                                         height={50}
                                         className="w-1/2 h-auto"
                                     />
-                                    Verified
+                                   {profile?.is_verified === true ? 'Verified' : 'Unverified'}
                                 </span>
-                            </p>
+                            </div>
                         </div>
                     </div>
                     
-                    <div className="bg-blue-600 border-1 rounded-xl py-1 px-6 md:mr-10 hover:bg-blue-700 active:scale-98 cursor-pointer">
+                    <button onClick={() => setIsEditing(true)} className="bg-blue-600 md:text-[1.1rem] text-sm border-1 border-blue-700 rounded-xl md:py-1 md:px-6 px-2 md:mr-10 hover:bg-blue-700 active:scale-98 cursor-pointer shadow-[0px_0px_10px_0px_rgba(0,0,0,0.2)]">
                         ✏️ Edit profile
-                    </div>
+                    </button>
                 </div>
+
+                {success && (
+                    <p className="text-green-600 text-sm text-center mt-2">{success}</p>
+                )}
+
+                {error && (
+                    <p className="text-red-500 text-sm text-center mt-2">{error}</p>
+                )}
             
-                <div className="flex justify-center md:w-9/10 gap-10">
+                <div className="md:flex flex-row justify-center md:w-9/10 gap-10">
                     <div className="flex flex-col gap-4">
-                        <div className="flex flex-col justify-center items-center border-1 rounded-2xl h-auto p-4">
-                            <h1 className="font-bold w-full text-left mb-2">About me</h1>
-                            <p className="text-left">
-                                Dedicated and detail-oriented cleaning proffessional with 5+
-                                years of experience providing top-quality residential and commercial cleaning services.
-                                I take pride in delivering spotless and excellent customer service
-                            </p>
+                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl h-auto p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                            <h1 className="font-bold w-full text-left mb-2">About me</h1>                            
+                                
+                            {!isEditing ? (
+                                <p className="text-left">{profile?.bio ?? 'No bio yet'}</p>
+                                ) : (
+                                <div className="w-full flex flex-col gap-3">
+                                    <textarea
+                                        name="bio"
+                                        value={formData.bio}
+                                        onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                                        placeholder="Tell customers about yourself..."
+                                        rows={4}
+                                        className="w-full rounded-xl border p-3 text-black"
+                                    />
+                                    <input
+                                        name="city"
+                                        value={formData.city}
+                                        onChange={(e) => setFormData({...formData, city: e.target.value})}
+                                        placeholder="City"
+                                        className="rounded-xl border p-3 text-black"
+                                    />
+                                    <input
+                                        name="district"
+                                        value={formData.district}
+                                        onChange={(e) => setFormData({...formData, district: e.target.value})}
+                                        placeholder="District"
+                                        className="rounded-xl border p-3 text-black"
+                                    />
+                                    <input
+                                        name="experience_years"
+                                        type="number"
+                                        value={formData.experience_years}
+                                        onChange={(e) => setFormData({...formData, experience_years: e.target.value})}
+                                        placeholder="Years of experience"
+                                        className="rounded-xl border p-3 text-black"
+                                    />
+                                    {/* Category selector */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {categories.map(cat => (
+                                            <button
+                                                key={cat.id}
+                                                type="button"
+                                                onClick={() => setSelectCategories(prev =>
+                                                    prev.includes(cat.id)
+                                                    ? prev.filter(id => id !== cat.id)
+                                                    : [...prev, cat.id]
+                                                )}
+                                                className={`px-4 py-2 rounded-xl border text-sm ${
+                                                    selectCategories.includes(cat.id)
+                                                    ? 'bg-blue-500 text-white border-blue-500'
+                                                    : 'bg-white text-gray-700 border-gray-300'
+                                                }`}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Save + Cancel */}
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={handleSave}
+                                            disabled={saving}
+                                            className="px-6 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 disabled:opacity-50"
+                                        >
+                                            {saving ? 'Saving...' : 'Save'}
+                                        </button>
+                                        <button
+                                            onClick={() => setIsEditing(false)}
+                                            className="px-6 py-2 border rounded-xl hover:bg-gray-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                           
                             <div className="flex gap-4 mt-3 w-full">
                                 {Badges.map((b, i) => (
                                     <p key={i} className="text-sm font-bolder">
@@ -136,7 +316,7 @@ export default function ProviderDashboard(){
                                
                             </div>
                         </div> 
-                        <div className="flex flex-col justify-center items-center border-1 rounded-2xl p-4">
+                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold w-full text-left mb-2">Skills</h1>
                             <div className="grid grid-cols-4 justify-start w-full">
                                 {Skills.map((s, i) => (
@@ -151,7 +331,7 @@ export default function ProviderDashboard(){
                            
                             
                         </div> 
-                        <div className="flex flex-col justify-center items-center border-1 rounded-2xl p-4">
+                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold w-full text-left mb-6">Work Experience</h1>
                             <div className="flex flex-col gap-4 justify-start w-full px-4">
                                 {Experience.map((e, i) => (  
@@ -178,7 +358,7 @@ export default function ProviderDashboard(){
                         </div>
                     </div>
 
-                    <div className="flex flex-col w-1/3 gap-3">
+                    <div className="flex flex-col md:w-1/3 gap-3">
                         <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl gap-2 p-6 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold">Profile Stats</h1>
                             <div className="grid grid-cols-3 items-center">
@@ -193,7 +373,7 @@ export default function ProviderDashboard(){
                                         />
                                     </span>
                                     
-                                    <span className="font-bold text-xl"> 24 </span> 
+                                    <span className="font-bold text-xl"> {profile?.completed_jobs} </span> 
                                     Jobs Completed
                                 </span>
 
@@ -208,7 +388,7 @@ export default function ProviderDashboard(){
                                         />
                                     </span>
                                     
-                                    <span className="font-bold text-xl"> 4.8 </span> 
+                                    <span className="font-bold text-xl"> {profile?.average_rating} </span> 
                                     Rating
                                 </span>
                                 <span className="flex flex-col items-center text-xs  space-y-2">

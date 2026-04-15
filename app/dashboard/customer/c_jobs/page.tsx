@@ -129,7 +129,7 @@ export default function AllJobs() {
 
                                 {job.status === 'open' && (
                                     <button className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium hover:bg-gray-50 transition active:scale-97">
-                                        Cancel
+                                        Submut Quote
                                     </button>
                                 )}
                                 

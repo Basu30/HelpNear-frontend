@@ -28,6 +28,7 @@ const SideBar = () => {    // l.
                 <Image
                     src={'/images/helpNear-logo.png'}
                     alt="HelpNear/OIRTUS"
+                    loading="eager"
                     width={100}
                     height={100}
                 />
