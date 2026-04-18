@@ -4,9 +4,11 @@ import { useAuth } from "@/lib/auth-context";
 import { getCustomerJobs } from "@/services/jobs.service";
 import type { JobRequest } from "@/types/job";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AllJobs() {
     const { token, isLoading} = useAuth();
+    const router = useRouter()
 
     const [jobs, setJobs] = useState<JobRequest[]>([])
     const [loading, setLoading] = useState(true)
@@ -37,11 +39,11 @@ export default function AllJobs() {
         cancelled:   'bg-red-100 text-red-700',
     }
 
-    // if (!loading) return (
-    //     <main className="flex justify-center items-center min-h-[60vh]">
-    //         <p className="text-gray-400 text-lg">Loading your jobs...</p>
-    //     </main>
-    // )
+    if (loading) return (
+        <main className="flex justify-center items-center min-h-[60vh]">
+            <p className="text-gray-400 text-lg">Loading your jobs...</p>
+        </main>
+    )
 
     if (error) {
         <main className="flex justify-center items-center min-h-[60vh]">
@@ -123,7 +125,7 @@ export default function AllJobs() {
                             </div>
 
                             <div className="mt-6 flex items-center justify-between">
-                                <button className="px-4 py-2 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-800 transition active:scale-97">
+                                <button onClick={() => router.push(`/dashboard/customer/c_quotes/${job.id}?title=${encodeURIComponent(job.title)}`)} className="px-4 py-2 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-800 transition active:scale-97">
                                     View Details
                                 </button>
 

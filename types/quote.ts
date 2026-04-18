@@ -17,4 +17,4 @@ export type CreateQuoteDTO = {
     price: number
     message?: string
     estimated_time?: string
-}
+} 

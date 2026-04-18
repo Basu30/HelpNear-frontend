@@ -122,10 +122,10 @@ export default function ProviderDashboard(){
         </div>
     )
     return (
-        <main className="h-[100vh] overflow-auto no-scrollbar bg-white text-black text-center">
+        <main className="h-[100vh] overflow-auto no-scrollbar text-black text-center bg-gradient-to-br from-slate-20 via-blue-100 to-indigo-20">
             <div className="flex flex-col justify-between items-center md:p-4 m-2">
                 <div className="flex items-center w-full justify-between">
-                    <div className="flex justify-start h-10 p-2 w-1/2 text-black rounded-2xl bg-gray-200 hover:bg-gray-300 active:border-none">
+                    <div className="flex justify-start h-10 p-2 w-1/2 text-black rounded-2xl bg-gray-200 hover:bg-gray-300 active:border-none  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                         <Image
                             src={'/images/search.png'}
                             alt="Search"
@@ -146,15 +146,15 @@ export default function ProviderDashboard(){
                             alt="Picture"
                             width={20}
                             height={20}
-                            className="w-10 h-10 p-2 rounded-full mx-4 border-1 bg-gray-200 hover:bg-gray-300 active:scale-97"
+                            className="w-8 h-8 p-2 rounded-full mx-4 border-1 bg-white hover:bg-gray-300 active:scale-97  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]"
                         />
                         <Image 
                             src={'/images/Basu3.JPEG'}
                             alt="Picture"
                             loading="eager"
-                            width={20}
-                            height={20}
-                            className="w-15 h-15 rounded-full mx-4 hover:bg-gray-300 active:scale-97"
+                            width={40}
+                            height={40}
+                            className="object-cover w-10 h-10 rounded-full hover:bg-gray-300 active:scale-97  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]"
                         />
                         {/* <select >
                             <option>select 1</option>
@@ -167,7 +167,7 @@ export default function ProviderDashboard(){
 
                 {/* PROFILE */}
                 <div className="flex items-center md:justify-between justify-evenly md:w-9/10 w-full text-white rounded-2xl bg-blue-500 my-4">
-                    <div className="md:grid grid-cols-2 items-center p-2">
+                    <div className="md:grid grid-cols-2 items-center">
                       
                         <Image 
                             src={'/images/Basu3.JPEG'}
@@ -175,7 +175,7 @@ export default function ProviderDashboard(){
                             loading="eager"
                             width={50}
                             height={50}
-                            className="md:flex hidden w-35 h-35 border-white border-4 rounded-full ml-10 my-6"
+                            className="object-cover md:flex hidden w-35 h-35 border-white border-4 rounded-full ml-10 my-4"
                         />
                         
                         <div className="text-left space-y-2">
@@ -199,7 +199,7 @@ export default function ProviderDashboard(){
                                     {profile?.average_rating} - ({profile?.total_reviews} reviews)
                                
                                 </div>
-                                <span className="flex items-center bg-blue-400 rounded-xl px-2 text-xs gap-1">
+                                <span className="flex items-center bg-blue-400 rounded-xl px-2 text-xs gap-1 ">
                                     <Image
                                         src={'/images/protect.png'}
                                         alt="Job Completed"
@@ -228,7 +228,7 @@ export default function ProviderDashboard(){
             
                 <div className="md:flex flex-row justify-center md:w-9/10 gap-10">
                     <div className="flex flex-col gap-4">
-                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl h-auto p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                        <div className="flex flex-col justify-center items-center bg-white border-1 border-gray-200 rounded-2xl h-auto p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold w-full text-left mb-2">About me</h1>                            
                                 
                             {!isEditing ? (
@@ -316,7 +316,7 @@ export default function ProviderDashboard(){
                                
                             </div>
                         </div> 
-                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold w-full text-left mb-2">Skills</h1>
                             <div className="grid grid-cols-4 justify-start w-full">
                                 {Skills.map((s, i) => (
@@ -331,7 +331,7 @@ export default function ProviderDashboard(){
                            
                             
                         </div> 
-                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold w-full text-left mb-6">Work Experience</h1>
                             <div className="flex flex-col gap-4 justify-start w-full px-4">
                                 {Experience.map((e, i) => (  
@@ -347,7 +347,7 @@ export default function ProviderDashboard(){
                                         </div>
                               
                                         <p className="flex flex-col text-left text-gray-500 -space-y-1 mb-2">
-                                            <span className="text-black font-bold text-[1.1rem]">{e.position}</span>
+                                            <span className="text-black font-bold text-[1.1rem] mb-1">{e.position}</span>
                                             <span>{e.company}</span>
                                             <span>{e.start} - {e.end}</span>
                                             <span>{e.desc}</span>
@@ -359,7 +359,7 @@ export default function ProviderDashboard(){
                     </div>
 
                     <div className="flex flex-col md:w-1/3 gap-3">
-                        <div className="flex flex-col justify-center items-center border-1 border-gray-200 rounded-2xl gap-2 p-6 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl gap-2 p-6 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                             <h1 className="font-bold">Profile Stats</h1>
                             <div className="grid grid-cols-3 items-center">
                                 <span className="flex flex-col items-center text-xs space-y-2">
@@ -408,9 +408,9 @@ export default function ProviderDashboard(){
                             </div>
                            
                         </div> 
-                        <div className="flex justify-center items-center border-1 rounded-xl ">Availability</div> 
-                        <div className="flex justify-center items-center border-1 rounded-xl ">Quick Actions</div> 
-                        <div className="flex justify-center items-center border-1 rounded-xl ">Account Settings</div> 
+                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Availability</div> 
+                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Quick Actions</div> 
+                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Account Settings</div> 
                     </div>    
 
                 </div>

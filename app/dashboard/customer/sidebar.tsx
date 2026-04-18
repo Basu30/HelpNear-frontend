@@ -56,7 +56,7 @@ const SideBar = () => {
                     </Link>s
                 </li>
                 <li className={`rounded-xl p-2 text-center hover:bg-gray-200 hover:text-blue-700 hover:scale-105 transition duration-200 ease-in-out ${pathname === '/dashboard/customer/c_quotes' ? 'bg-blue-100 text-blue-700 font-bold italic' : 'text-black'}`}>
-                    <Link href={'/dashboard/customer/c_quotes'}>
+                    <Link href={`/dashboard/customer/c_quotes`}>
                         💬 Quotes
                     </Link>
                 </li>
