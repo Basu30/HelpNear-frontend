@@ -13,6 +13,17 @@ export type Booking = {
     cancellation_reason: string | null
     created_at: Date
     updated_at: Date
+
+    // local 
+    title: string
+    city: string
+    district: string
+    provider_name: string
+    provider_rating: number
+    is_verified: boolean
+    price: number
+    estimated_time: string
+    
 }
 
 // This is what gets sent when CANCELLING a booking
