@@ -11,12 +11,15 @@ export type JobRequest = {
     city: string
     district: string | null
     address: string | null
-    preferred_date: string | null
-    preferred_time: string | null
+    preferred_date: string 
+    preferred_time: string 
     status: JobStatus
     selected_quote_id: string | null
     created_at: Date
     updated_at: Date
+
+    category_name: string
+
 }
 
 export type CreateJobDTO = {

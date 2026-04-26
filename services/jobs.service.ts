@@ -94,14 +94,10 @@ export default async function createJob( data: CreateJobInput, token: string ): 
 
 // --------------- GET ALL OPEN JOBS ------------------------
 
-export async function getAllJobs(token: string, page: 1, limit: 10): Promise<GetJobsResponse> {
+export async function getAllJobs(page: number = 1, limit: number = 10): Promise<GetJobsResponse> {
 
     const res = await fetch(`${BASE_URL}/jobs?page=${page}&limit=${limit}`, {
-        method: 'GET',
-        headers: {
-            'Authorization' : `Bearer ${token}`
-        },
-        
+        method: 'GET',        
         credentials: 'include',
     })
 
@@ -145,6 +141,7 @@ export type Category = {
     id: string
     name: string
     slug: string
+    icon_url: string
 }
 
 export type GetCategoriesResponse = {

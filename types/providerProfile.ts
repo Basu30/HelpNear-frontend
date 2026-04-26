@@ -14,6 +14,11 @@ export type ProviderProfile = {
     completed_jobs: number
     created_at: Date
     updated_at: Date
+
+    full_name: string
+    email: string
+    phone: string
+    
 }
 
 export type CreateProviderProfileDTO = {

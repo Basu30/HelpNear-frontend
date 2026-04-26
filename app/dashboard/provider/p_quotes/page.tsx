@@ -79,7 +79,7 @@ export default function ProviderQuote() {
     }
 
     return (
-        <main className="min-h-screen text-black md:p-24 p-2 border-2">
+        <main className="min-h-screen text-black md:py-24 px-64 p-2 border-2">
             <h1 className="md:text-[2rem] font-bold">My Quotes</h1>
 
             <div className="md:p-6">
@@ -109,8 +109,8 @@ export default function ProviderQuote() {
                 </nav>
 
                 <div className="w-full mt-6">
-                    <div className="bg-[#d5dbf7] text-[#2d80fa] md:text-lg text-sm items-center flex font-medium rounded-lg md:px-2 md:px-4 p-1 mb-4 w-max">
-                        <span className="md:text-[1.5rem] mr-2">ⓘ</span> There are all quotes you have submitted to customers.
+                    <div className="bg-blue-50 border border-blue-200 text-blue-700 md:text-md text-sm items-center flex rounded-lg md:px-2 md:px-4 p-1 mb-4 w-ma">
+                        <span className="md:text-[1.2rem] mr-2">ⓘ</span> There are all quotes you have submitted to customers.
                     </div>
 
                     {quotes.length === 0 ? (
@@ -135,11 +135,11 @@ export default function ProviderQuote() {
                                             <div className="flex flex-col justify-evenly text-[1rem]">
                                                 <div className="grid grid-rows-2">
                                                     <span className="font-bold md:text-[1.2rem]">{q.title}</span>
-                                                    <span className="text-sm text-gray-600">{q.city} {q.district}</span>
+                                                    <span className="text-sm text-gray-600">📍{q.city} {q.district}</span>
                                                 </div>
                                                 <div className="grid grid-rows-2">
                                                     <span className="italic text-">
-                                                        <strong>Customer: </strong> 
+                                                        <strong className="font-bold">Customer: </strong> 
                                                         {q.customer_name}
                                                     </span>
                                                     <span className="italic">

@@ -23,6 +23,7 @@ export type Booking = {
     is_verified: boolean
     price: number
     estimated_time: string
+    customer_name: string
     
 }
 

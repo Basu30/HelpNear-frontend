@@ -7,6 +7,10 @@ import type { JobRequest } from "@/types/job";
 // BASE URL
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1'
 
+export type GetAllProvidersResponse = {
+    providers: ProviderProfile[]
+    count: number | null
+}
 export type GetProfileResponse = {
     profile: ProviderProfile
 }
@@ -56,6 +60,15 @@ async function handleResponse<T>(res: Response): Promise<T> {
     return res.json() as Promise<T>
 }
 
+export async function getAllProviders(): Promise<GetAllProvidersResponse> {
+
+    const result = await fetch(`${BASE_URL}/providers`, {
+        method: 'GET',
+        credentials: 'include'
+    })
+
+    return handleResponse<GetAllProvidersResponse>(result)
+}
 
 // ------------ GET OWN PROFILE -----------------------------
 
