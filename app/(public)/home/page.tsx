@@ -9,21 +9,7 @@ import { getAllProviders } from '@/services/provider.service';
 import { JobRequest } from '@/types/job';
 import { ProviderProfile } from '@/types/providerProfile';
 
-// const jobs = [
-//   { title: 'House Deep Cleaning', category: 'Cleaning', location: 'Calgary, AB', price: '$120 - $180', time: '2h ago', image: '/images/cleaning.jpg' },
-//   { title: 'Kitchen Faucet Fix', category: 'Plumbing', location: 'Okotoks, AB', price: '$90 - $140', time: '3h ago', image: '/images/plumbing.jpg' },
-//   { title: 'Furniture Assembly', category: 'Handyman', location: 'Calgary, AB', price: '$60 - $100', time: '4h ago', image: '/images/handyman.jpg' },
-//   { title: 'Wall Painting', category: 'Painting', location: 'Chestermere, AB', price: '$200 - $350', time: '5h ago', image: '/images/painting.jpg' },
-//   { title: 'Lawn Mowing', category: 'Yard Work', location: 'Calgary, AB', price: '$40 - $70', time: '6h ago', image: '/images/lawn.jpg' },
-//   { title: 'Bathroom Repair', category: 'Plumbing', location: 'Airdrie, AB', price: '$80 - $120', time: '7h ago', image: '/images/bathroom.jpg' },
-// ];
 
-// const providers = [
-//   { name: 'Basu Provider', skill: 'Home Repair', rating: '4.9', reviews: 124, jobs: 128 },
-//   { name: 'Sarah CleanPro', skill: 'Cleaning', rating: '4.8', reviews: 98, jobs: 96 },
-//   { name: 'Mike Plumbing', skill: 'Plumbing', rating: '4.7', reviews: 86, jobs: 112 },
-//   { name: 'John Handyman', skill: 'Handyman', rating: '4.9', reviews: 110, jobs: 145 },
-// ];
 
 const categoryEmojis: Record<string, string> = {
     'Cleaning':        '🧹',
@@ -63,7 +49,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
       <header className="h-20 border-b border-slate-200 px-6 md:px-14 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-bold text-xl">
+        <Link href="/home" className="flex items-center gap-2 font-bold text-xl">
           <div className="w-20 bg-blue-600 rounded-xl flex items-center justify-center text-white">
             <Image
                 src='/images/helpnear-logo.png'
@@ -73,7 +59,7 @@ export default function HomePage() {
                 className='w-auto h-auto object-cover'/>
           </div>
           HelpNear/ OIRTUS
-        </div>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-10 text-sm font-medium">
           <Link href="#browseJobs" className="hover:bg-gray-200 px-2 py-1 rounded transition-all duration-400">Browse Jobs</Link>

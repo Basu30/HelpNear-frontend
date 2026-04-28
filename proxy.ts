@@ -14,7 +14,7 @@ import { NextRequest } from "next/server";
  * Why: intercept the request and decides allow or redirect
  * NextRequest: types version of the incoming request - has .cookies, .nextUrl etc
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
 
     /**
      * What: reads the accessToken cookie from the incoming request

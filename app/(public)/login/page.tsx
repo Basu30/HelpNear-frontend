@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { loginUser, registerUser } from "@/services/auth.service";
 import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";
+import Link from "next/link";
 
 const Login = () => {
     const { login } = useAuth();
@@ -88,8 +89,20 @@ const Login = () => {
 
     return (
         <main className="min-h-screen flex justify-center items-center bg-[#caeaf7f5] border-8 border-white text-black">
-            <div id="login"  className={`relative md:w-4/8 h-[600px] flex ${display === "#login" ? "justify-between" : "justify-end"} bg-white rounded-4xl shadow-[0px_2px_8px_4px_rgba(0,0,0,0.2)]`}>
-
+            <div id="login"  className={`relative md:w-4/8 h-[600px] flex ${display === "#login" ? "justify-start" : "justify-end"} bg-white rounded-4xl shadow-[0px_2px_8px_4px_rgba(0,0,0,0.2)]`}>
+               
+                {/* Logo + Link to Landing page */}
+                <Link href={'/home'}>
+                    <Image
+                        src={'/images/helpNear-logo.png'}
+                        alt="HelpNear"
+                        width={100}
+                        height={100}
+                        className="fixed rounded-full active:scale-97"
+                    />
+                </Link>
+                
+           
                 {/* LOGIN PAGE */}
                 <div className={`flex flex-col gap-8 " ${display === "#login" ? "flex w-1/2 justify-center items-center" : "hidden"}`}>
                     <h1 className="text-center font-bold md:text-4xl">
