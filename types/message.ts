@@ -7,6 +7,8 @@ export type Message = {
     message_text: string
     is_read: boolean
     created_at: Date
+
+    sender_name: string
 }
 
 export type CreateMessageDTO = {

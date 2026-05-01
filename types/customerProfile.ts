@@ -13,6 +13,11 @@ export type CustomerProfile = {
     total_cancelled_bookings: number
     created_at: Date
     updated_at: Date
+
+    full_name: string
+    email: string
+    phone: string
+
 }
 
 export type CreateCustomerProfileDTO = {
@@ -22,9 +27,9 @@ export type CreateCustomerProfileDTO = {
     default_address?: string
 }
 
-export type UpdateCustomerProfileDTO = {
-    profile_image_url?: string
-    city?: string
-    district?: string
-    default_address?: string
-}
+// export type UpdateCustomerProfileDTO = {
+//     profile_image_url?: string
+//     city?: string
+//     district?: string
+//     default_address?: string
+// }

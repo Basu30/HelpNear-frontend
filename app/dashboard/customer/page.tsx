@@ -1,27 +1,113 @@
 'use client'
-import Image from "next/image";
-import { useState } from "react";
 
+import Image from "next/image"
+import type { CustomerProfile } from "@/types/customerProfile"
+import { useEffect, useState } from "react"
+import { useAuth } from "@/lib/auth-context"
+import { getAllCustomers, updateProfile } from "@/services/customer.service"
+
+
+
+const Badges = [
+    { id: '1', badgeName: 'Reliable'},
+    { id: '2', badgeName: 'Hard Working'},
+    { id: '3', badgeName: 'Detail Oriented'},
+    { id: '4', badgeName: 'On-time'},
+]
+
+const Skills = [
+    { id: 1, name: 'Deep cleaning'},
+   
+    { id: 2, name: 'Kitchen Cleaning'},
+    { id: 3, name: 'Bathroom Sanitization'},
+    { id: 4, name: 'Floor Care'},
+    { id: 5, name: 'Laundry'},
+    { id: 6, name: 'Window Cleaning'},
+    { id: 7, name: 'Organization'},
+
+]
+
+const Experience = [
+    {id: '1', position: 'Senior Cleaner', company: 'Sparkle Cleaning Services', start: '2021', end: 'present', desc: 'Provide deep cleaning services for homes and offices. Manage client schedules and ensure 100% satisfaction' },
+    {id: '2', position: 'Cleaner', company: 'Sparkle Cleaning Services', start: '2010', end: '2021', desc: 'Provide deep cleaning services for homes and offices. Manage client schedules and ensure 100% satisfaction' },
+    {id: '3', position: 'Assistant Cleaner', company: 'Sparkle Cleaning Services', start: '2009', end: '2010', desc: 'Provide deep cleaning services for homes and offices. Manage client schedules and ensure 100% satisfaction' },
+]
 
 export default function CustomerDashboard(){
-    const [stats, setStats] = useState({
-        jobs: 0,
-        quotes: 0,
-        bookings: 0
-    })
+    const {user, token, isLoading } = useAuth();
+
+    // PROFILE DATA FROM API
+    const [profile, setProfile] = useState<CustomerProfile | null>(null)
+
+    // EDIT MODE TOGGLE
+    const [isEditing, setIsEditing] = useState(false)
+
+    // FORM DATA - PRE-FILLED WHEN ENTERING EDIT MODE
+    const [formData, setFormData] = useState({
+        city: '',
+        district: '',
+        default_address: '',
+    });
+
+
     
+    // UI
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState<string | null>(null)
+
+    useEffect(() => {
+      if(isLoading || !token) return
+
+        getAllCustomers(token)
+          .then(data => setProfile(data.customers))
+          .catch(err => setError( err.message ))
+          .finally(() => setLoading(false))
+    }, [isLoading, token]);
+
+
+    // SAVE HANDLER
+    // const handleSave = async () => {
+    //     setSaving(true)
+    //     setError(null)
+    //     setSuccess(null)
+
+    //     try {
+    //         await updateProfile({
+    //                 ...formData,
+    //                 city: formData.city,
+    //                 district: formData.district,
+    //                 default_address: formData.default_address
+    //             }, 
+    //             token!),
+              
+           
+
+    //         setSuccess('Profile updated successfully')
+    //         setIsEditing(false)
+
+    //         // REFRESH PROFILE DATA
+    //         const updated = await ownProfile(token!)
+    //         setProfile(updated.profile)
+
+    //     } catch (err) {
+    //         if (err instanceof Error ) setError(err.message)
+    //     } finally {
+    //         setSaving(false)
+    //     }
+    // }
+
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <p className="text-gray-400">Loading profile...</p>
+        </div>
+    )
     return (
-        <main className="min-h-screen flex bg-white text-black ">
-        
-            <div className="flex flex-col justify-between w-full md:p-4 m-2">
-                <div className="flex items-center w-full mb-8 ">
-
-                    <div className="flex flex-col w-full md:ml-4 -space-y-2">
-                        <h1 className="font-bold text-black xl:text-[2.5rem] md:text-[1.5rem]">Hello dear, Customer! 👋</h1>    
-                        <p className="md:text-[1.2rem] italic text-gray-500">Welcome to your dashboard.</p>
-                    </div>
-
-                    <div className=" flex justify-start h-10 p-2 w-1/2 text-black rounded-xl bg-gray-200 hover:bg-gray-300 active:border-none">
+        <main className="h-[100vh] overflow-auto no-scrollbar text-black text-center bg-gradient-to-br from-slate-20 via-blue-100 to-indigo-20">
+            <div className="flex flex-col justify-between items-center md:p-4 m-2">
+                <div className="flex items-center w-full justify-between">
+                    <div className="flex justify-start h-10 p-2 w-1/2 text-black rounded-2xl bg-gray-200 hover:bg-gray-300 active:border-none  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
                         <Image
                             src={'/images/search.png'}
                             alt="Search"
@@ -42,14 +128,15 @@ export default function CustomerDashboard(){
                             alt="Picture"
                             width={20}
                             height={20}
-                            className="w-10 h-10 p-2 rounded-full mx-4 border-1 bg-gray-200 hover:bg-gray-300 active:scale-97"
+                            className="w-8 h-8 p-2 rounded-full mx-4 border-1 bg-white hover:bg-gray-300 active:scale-97  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]"
                         />
                         <Image 
                             src={'/images/Basu3.JPEG'}
                             alt="Picture"
-                            width={20}
-                            height={20}
-                            className="w-15 h-15 rounded-full mx-4 hover:bg-gray-300 active:scale-97"
+                            loading="eager"
+                            width={40}
+                            height={40}
+                            className="object-cover w-10 h-10 rounded-full hover:bg-gray-300 active:scale-97  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]"
                         />
                         {/* <select >
                             <option>select 1</option>
@@ -58,40 +145,495 @@ export default function CustomerDashboard(){
                             <option>select 4</option>
                         </select> */}
                     </div>
+                </div>
+
+                {/* PROFILE */}
+                <div className="flex items-center md:justify-between justify-evenly md:w-9/10 w-full text-white rounded-2xl bg-blue-500 my-4">
+                    <div className="md:grid grid-cols-2 items-center">
+                      
+                        <Image 
+                            src={'/images/Basu3.JPEG'}
+                            alt="Picture"
+                            loading="eager"
+                            width={50}
+                            height={50}
+                            className="object-cover md:flex hidden w-35 h-35 border-white border-4 rounded-full ml-10 my-4"
+                        />
+                        
+                        <div className="text-left space-y-2">
+                            <h1 className="md:text-[1.5rem] font-bold ">{user?.full_name}</h1>
+                            <p className="text-sm">{user?.role.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || ''}</p>
+                            <p className="text-xs">
+                                {profile?.city && profile?.district 
+                                ? `${profile?.city}, ${profile?.district}` 
+                                : profile?.city ?? 'Location not set'} 
+                            </p>
+                            <div className="flex space-x-2">
+                                <div className="flex bg-blue-400 rounded-xl px-0.5 py-0.5 text-xs gap-1 items-center">
+                              
+                                    <Image
+                                        src={'/images/star.png'}
+                                        alt="Job Completed"
+                                        width={20} 
+                                        height={20}
+                                        className="md:w-1/8 h-auto ml-1"
+                                    /> 
+                                    {profile?.average_rating} - ({profile?.total_reviews} reviews)
+                               
+                                </div>
+                                <span className="flex items-center bg-blue-400 rounded-xl px-2 text-xs gap-1 ">
+                                    <Image
+                                        src={'/images/protect.png'}
+                                        alt="Job Completed"
+                                        width={50}
+                                        height={50}
+                                        className="w-1/2 h-auto"
+                                    />
+                                   {profile?.is_identity_verified === true ? 'Verified' : 'Unverified'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                     
+                    <button onClick={() => setIsEditing(true)} className="bg-blue-600 md:text-[1.1rem] text-sm border-1 border-blue-700 rounded-xl md:py-1 md:px-6 px-2 md:mr-10 hover:bg-blue-700 active:scale-98 cursor-pointer shadow-[0px_0px_10px_0px_rgba(0,0,0,0.2)]">
+                        ✏️ Edit profile
+                    </button>
                 </div>
-             
 
-                <div className="grid grid-cols-3 items-center w-full gap-8">
-                    <div className="flex justify-center items-center border-1 rounded-xl h-30">{stats.jobs} Jobs posted</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-30">{stats.quotes} Quotes reveived</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-30">{stats.bookings} Booking active</div> 
-                    {/* <div className="flex justify-center items-center border-1 rounded-xl h-30">1 Booking active</div>  */}
+                {success && (
+                    <p className="text-green-600 text-sm text-center mt-2">{success}</p>
+                )}
+
+                {error && (
+                    <p className="text-red-500 text-sm text-center mt-2">{error}</p>
+                )}
+            
+                <div className="md:flex flex-row justify-center md:w-9/10 gap-10">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col justify-center items-center bg-white border-1 border-gray-200 rounded-2xl h-auto p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                            <h1 className="font-bold w-full text-left mb-2">About me</h1>                            
+                                
+                            {/* {!isEditing ? (
+                                <p className="text-left">{profile?.bio ?? 'No bio yet'}</p>
+                                ) : (
+                                <div className="w-full flex flex-col gap-3">
+                                    <textarea
+                                        name="bio"
+                                        value={formData.bio}
+                                        onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                                        placeholder="Tell customers about yourself..."
+                                        rows={4}
+                                        className="w-full rounded-xl border p-3 text-black"
+                                    />
+                                    <input
+                                        name="city"
+                                        value={formData.city}
+                                        onChange={(e) => setFormData({...formData, city: e.target.value})}
+                                        placeholder="City"
+                                        className="rounded-xl border p-3 text-black"
+                                    />
+                                    <input
+                                        name="district"
+                                        value={formData.district}
+                                        onChange={(e) => setFormData({...formData, district: e.target.value})}
+                                        placeholder="District"
+                                        className="rounded-xl border p-3 text-black"
+                                    />
+                                    <input
+                                        name="experience_years"
+                                        type="number"
+                                        value={formData.experience_years}
+                                        onChange={(e) => setFormData({...formData, experience_years: e.target.value})}
+                                        placeholder="Years of experience"
+                                        className="rounded-xl border p-3 text-black"
+                                    /> */}
+                                    {/* Category selector
+                                    <div className="flex flex-wrap gap-2">
+                                        {categories.map(cat => (
+                                            <button
+                                                key={cat.id}
+                                                type="button"
+                                                onClick={() => setSelectCategories(prev =>
+                                                    prev.includes(cat.id)
+                                                    ? prev.filter(id => id !== cat.id)
+                                                    : [...prev, cat.id]
+                                                )}
+                                                className={`px-4 py-2 rounded-xl border text-sm ${
+                                                    selectCategories.includes(cat.id)
+                                                    ? 'bg-blue-500 text-white border-blue-500'
+                                                    : 'bg-white text-gray-700 border-gray-300'
+                                                }`}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))}
+                                    </div> */}
+
+                                    {/* Save + Cancel */}
+                                    {/* <div className="flex gap-3">
+                                        <button
+                                            onClick={handleSave}
+                                            disabled={saving}
+                                            className="px-6 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 disabled:opacity-50"
+                                        >
+                                            {saving ? 'Saving...' : 'Save'}
+                                        </button>
+                                        <button
+                                            onClick={() => setIsEditing(false)}
+                                            className="px-6 py-2 border rounded-xl hover:bg-gray-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )} */}
+                           
+                            <div className="flex gap-4 mt-3 w-full">
+                                {Badges.map((b, i) => (
+                                    <p key={i} className="text-sm font-bolder">
+                                        <span className="px-4 py-0.5 bg-gray-200 rounded-xl">{b.badgeName}</span>
+                                    </p>
+                                    
+                                ))}
+                               
+                            </div>
+                        </div> 
+                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                            <h1 className="font-bold w-full text-left mb-2">Skills</h1>
+                            <div className="grid grid-cols-4 justify-start w-full">
+                                {Skills.map((s, i) => (
+                                    <div key={i} className="w-max">
+                                        <p className=" bg-gray-200 rounded-2xl px-2 m-1">
+                                            {s.name}
+                                        </p>
+                                    </div>
+                                
+                                ))}
+                            </div>
+                           
+                            
+                        </div> 
+                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                            <h1 className="font-bold w-full text-left mb-6">Work Experience</h1>
+                            <div className="flex flex-col gap-4 justify-start w-full px-4">
+                                {Experience.map((e, i) => (  
+                                    <div key={i} className="flex gap-4 border-b-1 border-gray-300 ">
+                                        <div  className="bg-blue-200 rounded-xl h-max p-2">
+                                            <Image
+                                                src={'/images/experience.png'}
+                                                alt="Job Completed"
+                                                width={50}
+                                                height={50}
+                                                className="w-auto h-auto"
+                                            />
+                                        </div>
+                              
+                                        <p className="flex flex-col text-left text-gray-500 -space-y-1 mb-2">
+                                            <span className="text-black font-bold text-[1.1rem] mb-1">{e.position}</span>
+                                            <span>{e.company}</span>
+                                            <span>{e.start} - {e.end}</span>
+                                            <span>{e.desc}</span>
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>  
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:w-1/3 gap-3">
+                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl gap-2 p-6 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                            <h1 className="font-bold">Profile Stats</h1>
+                            <div className="grid grid-cols-3 items-center">
+                                <span className="flex flex-col items-center text-xs space-y-2">
+                                    <span className="relativ flex justify-center items-center  bg-green-100 rounded-full w-10 h-10 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                                        <Image
+                                            src={'/images/comp.png'}
+                                            alt="Job Completed"
+                                            width={50}
+                                            height={50}
+                                            className="w-1/2 h-auto"
+                                        />
+                                    </span>
+                                    
+                                    <span className="font-bold text-xl"> {profile?.total_completed_bookings} </span> 
+                                    Completed Bookings
+                                </span>
+
+                                <span className="flex flex-col items-center text-xs space-y-2">
+                                    <span className="relative flex justify-center items-center bg-yellow-100 rounded-full w-10 h-10 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                                        <Image
+                                            src={'/images/star.png'}
+                                            alt="Rating"
+                                            width={50}
+                                            height={50}
+                                            className="absolute w-1/2 h-auto"
+                                        />
+                                    </span>
+                                    
+                                    <span className="font-bold text-xl"> {profile?.average_rating} </span> 
+                                    Rating
+                                </span>
+                                <span className="flex flex-col items-center text-xs  space-y-2">
+                                    <span className="relative flex justify-center items-center bg-blue-100 rounded-full w-10 h-10 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                                        <Image
+                                            src={'/images/good.png'}
+                                            alt="Success job "
+                                            width={50}
+                                            height={50}
+                                            className="absolute w-2/3 h-auto"
+                                        />
+                                    </span>
+                                    
+                                    <span className="font-bold text-xl"> 98% </span> 
+                                    Job Success
+                                </span>
+                            </div>
+                           
+                        </div> 
+                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Availability</div> 
+                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Quick Actions</div> 
+                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Account Settings</div> 
+                    </div>    
+
                 </div>
-                
-                <div className="grid grid-cols-2 items-center w-full gap-10">
-                    <div className="flex justify-center items-center border-1 rounded-xl h-60"></div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-60"></div> 
-                </div>   
 
-                <div className="grid grid-cols-4 items-center w-full gap-8">
-                    <div className="flex justify-center items-center border-1 rounded-xl  h-80">Top Categories</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-80">Rewards Progress</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-80">Quick Actions</div> 
-                    <div className="flex justify-center items-center border-1 rounded-xl h-80">1 Booking active</div> 
-                </div>    
+               
                 
-                <footer className="flex items-center justify-between border-1 rounded-xl mt-2 md:px-10 px-2 h-20">
+                {/* <footer className="flex items-center justify-between border-1 rounded-xl mt-2 md:px-10 px-2 h-20">
                     <div>
                         <h1 className="font-bold md:text-xl text-sm">Need Help? We're here for you.</h1>
                     <p className="text-[0.9rem] text-black/50 italic">Visit our help center or contact our support team</p>
                     </div>
                     
                     <button className="flex rounded-md md:px-4 py-1 font-bolder text-white bg-blue-500 hover:bg-blue-700 active:scale-98 truncate">Contact Support</button>
-                </footer>
+                </footer> */}
 
             </div>
             
+           
         </main>
     )
 }
+
+// 'use client';
+
+// import Image from 'next/image';
+// import Link from 'next/link';
+
+// export default function CustomerProfilePage() {
+//   return (
+//     <main className="min-h-screen bg-[#f7f9fc] text-[#1f2937] flex">
+      
+      
+
+//       {/* MAIN CONTENT */}
+//       <section className="flex-1 p-8">
+
+//         {/* Top Search */}
+//         <div className="flex justify-between items-center mb-2">
+//           <input
+//             placeholder="Search jobs, services, or providers..."
+//             className="w-[450px] bg-white border border-gray-200 rounded-2xl px-5 py-3 outline-none"
+//           />
+
+//           <div className="flex items-center gap-5">
+//             <button>♡</button>
+//             <button>🔔</button>
+
+//             <Image
+//               src="/images/profile.jpg"
+//               alt="profile"
+//               width={45}
+//               height={45}
+//               className="rounded-full object-cover"
+//             />
+//           </div>
+//         </div>
+
+//         {/* Profile Hero */}
+//         <div className="bg-[#dfeafe] rounded-3xl p-8 flex justify-between items-center mb-8">
+//           <div className="flex items-center gap-6">
+//             <Image
+//               src="/images/profile.jpg"
+//               alt="profile"
+//               width={130}
+//               height={130}
+//               className="rounded-full object-cover border-4 border-white"
+//             />
+
+//             <div>
+//               <h2 className="text-4xl font-bold">Emily Johnson</h2>
+//               <p className="text-gray-600 mt-2">Customer</p>
+//               <p className="text-gray-500 mt-2">
+//                 Vancouver, British Columbia, Canada
+//               </p>
+//               <p className="text-gray-500">
+//                 Member since March 2024
+//               </p>
+//             </div>
+//           </div>
+
+//           <button className="bg-white px-6 py-3 rounded-2xl font-medium border border-gray-200 hover:bg-gray-50">
+//             Edit Profile
+//           </button>
+//         </div>
+
+//         {/* Tabs */}
+//         <div className="flex gap-10 border-b border-gray-200 mb-8">
+//           {[
+//             'Overview',
+//             'My Bookings',
+//             'Saved',
+//             'Reviews',
+//             'Payment & Wallet',
+//           ].map((tab, index) => (
+//             <button
+//               key={tab}
+//               className={`pb-4 font-medium ${
+//                 index === 0
+//                   ? 'text-blue-600 border-b-2 border-blue-600'
+//                   : 'text-gray-500'
+//               }`}
+//             >
+//               {tab}
+//             </button>
+//           ))}
+//         </div>
+
+//         {/* Grid Layout */}
+//         <div className="grid grid-cols-[2fr_1fr] gap-6">
+
+//           {/* LEFT COLUMN */}
+//           <div className="space-y-6">
+
+//             {/* About Me */}
+//             <div className="bg-white rounded-3xl p-6 border border-gray-200">
+//               <h3 className="text-xl font-bold mb-4">About Me</h3>
+//               <p className="text-gray-600 leading-8">
+//                 I’m a busy professional who values reliable and
+//                 high-quality service. I use JobConnect to find trusted
+//                 workers for home, cleaning, repairs, and more.
+//               </p>
+//             </div>
+
+//             {/* Stats */}
+//             <div className="grid grid-cols-4 gap-4">
+//               {[
+//                 ['12', 'Jobs Posted'],
+//                 ['9', 'Jobs Completed'],
+//                 ['4.8', 'Average Rating'],
+//                 ['5', 'Providers Saved'],
+//               ].map(([value, label]) => (
+//                 <div
+//                   key={label}
+//                   className="bg-white rounded-2xl p-1 border border-gray-200 text-center"
+//                 >
+//                   <p className="text-2xl font-bold">{value}</p>
+//                   <p className="text-sm text-gray-500 mt-2">{label}</p>
+//                 </div>
+//               ))}
+//             </div>
+
+//             {/* Recent Bookings */}
+//             <div className="bg-white rounded-3xl p-6 border border-gray-200">
+//               <div className="flex justify-between mb-6">
+//                 <h3 className="text-xl font-bold">Recent Bookings</h3>
+//                 <Link href="#" className="text-blue-600 font-medium">
+//                   View All
+//                 </Link>
+//               </div>
+
+//               <div className="space-y-5">
+//                 {[
+//                   ['House Deep Cleaning', '$120'],
+//                   ['Bathroom Repair', '$90'],
+//                   ['Furniture Assembly', '$75'],
+//                 ].map(([title, price]) => (
+//                   <div
+//                     key={title}
+//                     className="flex justify-between items-center"
+//                   >
+//                     <div>
+//                       <h4 className="font-semibold">{title}</h4>
+//                       <p className="text-sm text-gray-500">Completed</p>
+//                     </div>
+
+//                     <div className="flex items-center gap-5">
+//                       <p className="font-bold">{price}</p>
+//                       <button className="border px-4 py-2 rounded-xl">
+//                         View Details
+//                       </button>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+
+//           </div>
+
+//           {/* RIGHT COLUMN */}
+//           <div className="space-y-6">
+
+//             {/* Account Summary */}
+//             {/* <div className="bg-white rounded-3xl p-6 border border-gray-200">
+//               <h3 className="text-xl font-bold mb-5">Account Summary</h3>
+
+//               <div className="grid grid-cols-1 gap-4">
+//                 {[
+//                   ['$340.50', 'Wallet Balance'],
+//                   ['2', 'Active Bookings'],
+//                   ['4.8', 'Average Rating'],
+//                 ].map(([value, label]) => (
+//                   <div
+//                     key={label}
+//                     className="bg-gray-50 rounded-2xl p-4"
+//                   >
+//                     <p className="text-2xl font-bold">{value}</p>
+//                     <p className="text-sm text-gray-500">{label}</p>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div> */}
+
+//             {/* Payment Methods */}
+//             {/* <div className="bg-white rounded-3xl p-6 border border-gray-200">
+//               <h3 className="text-xl font-bold mb-4">Payment Methods</h3>
+
+//               <div className="space-y-4">
+//                 <div className="border rounded-xl p-4">
+//                   Visa •••• 4242
+//                 </div>
+//                 <div className="border rounded-xl p-4">
+//                   Mastercard •••• 8888
+//                 </div>
+//               </div>
+//             </div> */}
+
+//             {/* Settings */}
+//             <div className="bg-white rounded-3xl p-6 border border-gray-200">
+//               <h3 className="text-xl font-bold mb-4">Account Settings</h3>
+
+//               <div className="space-y-4">
+//                 {[
+//                   'Personal Information',
+//                   'Notification Preferences',
+//                   'Security & Privacy',
+//                   'Help & Support',
+//                 ].map((setting) => (
+//                   <button
+//                     key={setting}
+//                     className="w-full flex justify-between py-3 border-b text-left"
+//                   >
+//                     <span>{setting}</span>
+//                     <span>›</span>
+//                   </button>
+//                 ))}
+//               </div>
+//             </div>
+
+//           </div>
+//         </div>
+//       </section>
+//     </main>
+//   );
+// }

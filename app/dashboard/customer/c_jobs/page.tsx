@@ -111,7 +111,7 @@ export default function AllJobs() {
                                     <div className="bg-gray-100 rounded-xl p-3 col-span-">
                                         <p className="text-gray-400 text-xs mb-1">Preferred Date</p>
                                         <p className="font-medium text-gray-800">
-                                        {new Date(Number(job.preferred_date)).toLocaleDateString( 'en-CA', {
+                                        {new Date(job.preferred_date).toLocaleDateString( 'en-CA', {
                                             year: 'numeric',
                                             month: 'short',
                                             day: 'numeric'
@@ -122,10 +122,11 @@ export default function AllJobs() {
                                     <div className="bg-gray-100 rounded-xl p-3 col-span-">
                                         <p className="text-gray-400 text-xs mb-1">Preferred Time</p>
                                         <p className="font-medium text-gray-800">
-                                        {new Date(Number(job.preferred_time)).toLocaleTimeString( 'en-CA', {
+                                        {/* {new Date(Number(job.preferred_time)).toLocaleTimeString( 'en-CA', {
                                             hour: 'numeric',
                                             minute: 'numeric',
-                                        }) || "Flexible"}
+                                        }) || "Flexible"} */}
+                                        {job.preferred_time ?? 'Flexible'}
                                         </p>
                                     </div>
                                 </div>

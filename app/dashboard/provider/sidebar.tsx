@@ -24,7 +24,7 @@ const SideBar = () => {    // l.
 
     return (
         <nav className="md:flex hidden min-h-screen justify-between flex-col text-center text-black border-r-1 border-gray-300 rounded-xl xl:w-1/6 w-2/8">
-            <div className="flex justify-center items-center border-b-1 border-gray-300">
+            <Link href={'/home'} className="flex justify-center items-center border-b-1 border-gray-300">
                 <Image
                     src={'/images/helpNear-logo.png'}
                     alt="HelpNear/OIRTUS"
@@ -35,7 +35,7 @@ const SideBar = () => {    // l.
                 
                 <h1 className="font-bold xl:text-[1.8rem] xl:py-4 ">HelpNear</h1>
                 
-            </div>
+            </Link>
             
             <ul className="flex flex-col items-start xl:px-20 xl:text-[1.3rem] ">
                 <li  className={`flex justify-evenly items-center rounded-xl p-2 text-center hover:bg-gray-200 hover:text-blue-700 hover:scale-105 transition duration-200 ease-in-out ${pathname === '/dashboard/provider' ? 'bg-blue-100 text-blue-700 font-bold italic' : 'text-black'}`}>

@@ -1,257 +1,232 @@
-
-
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { getSocket } from '@/lib/socket';
+import { useAuth } from '@/lib/auth-context';
+import { Message } from '@/types/message';
+import { getMessages, sendMessage } from '@/services/messages';
+import { Booking } from '@/types/booking';
+import { getCustomerBookings } from '@/services/booking.service';
 
-type Conversation = {
-  id: string;
-  booking_id: string;
-  job_title: string;
-  other_user_name: string;
-  last_message: string;
-  last_message_at: string;
-  unread_count: number;
-};
-
-type Message = {
-  id: string;
-  sender_id: string;
-  sender_name: string;
-  content: string;
-  created_at: string;
-  is_me: boolean;
-};
-
-const mockConversations: Conversation[] = [
-  {
-    id: '1',
-    booking_id: 'booking-1',
-    job_title: 'House Deep Cleaning',
-    other_user_name: 'Sarah Johnson',
-    last_message: 'Sounds good! I can start tomorrow.',
-    last_message_at: '10:45 AM',
-    unread_count: 2,
-  },
-  {
-    id: '2',
-    booking_id: 'booking-2',
-    job_title: 'Bathroom Repair',
-    other_user_name: 'Mike Plumbing',
-    last_message: 'Thanks, looking forward to it.',
-    last_message_at: 'Yesterday',
-    unread_count: 0,
-  },
-];
-
-const mockMessages: Message[] = [
-  {
-    id: '1',
-    sender_id: 'user-1',
-    sender_name: 'Sarah Johnson',
-    content: "Hi! I'm interested in your job.",
-    created_at: '10:30 AM',
-    is_me: false,
-  },
-  {
-    id: '2',
-    sender_id: 'me',
-    sender_name: 'Me',
-    content: 'Hi Sarah, thanks for your interest!',
-    created_at: '10:31 AM',
-    is_me: true,
-  },
-  {
-    id: '3',
-    sender_id: 'user-1',
-    sender_name: 'Sarah Johnson',
-    content: 'I can do it for $120.',
-    created_at: '10:32 AM',
-    is_me: false,
-  },
-];
 
 export default function MessagesPage() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [selectedConversation, setSelectedConversation] =
-    useState<Conversation | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [messageText, setMessageText] = useState('');
+  const { token, isLoading, user } = useAuth();
 
+  // STATE
+  const [ messages, setMessages] = useState<Message[]>([])
+  const [ bookings, setBookings ] = useState<Booking[]>([])
+  const [ selected, setSelected ] = useState<Booking | null>(null)
+  const [ messageText, setMessageText] = useState('')
+  const [loadingMsgs, setLoadingMsgs] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  // FETCH BOOKINGS (conversation list)
   useEffect(() => {
-    // later replace with getConversations(token)
-    setConversations(mockConversations);
-    setSelectedConversation(mockConversations[0]);
-    setMessages(mockMessages);
-  }, []);
+    if (isLoading || !token) return
 
-  const handleSelectConversation = (conversation: Conversation) => {
-    setSelectedConversation(conversation);
+    getCustomerBookings(token)
+      .then(data => setBookings(data.bookings))
+      .catch(err => console.error(err.message))
+  }, [isLoading, token])
 
-    // later replace with getMessages(conversation.booking_id, token)
-    setMessages(mockMessages);
-  };
 
-  const handleSendMessage = () => {
-    if (!messageText.trim()) return;
+  // WHEN BOOKING SELECTED - LOAD MESSAGES + JOIN ROOM 
+  useEffect(() => {
+    if (!selected || !token) return
 
-    const newMessage: Message = {
-      id: crypto.randomUUID(),
-      sender_id: 'me',
-      sender_name: 'Me',
-      content: messageText,
-      created_at: 'Now',
-      is_me: true,
-    };
+    setLoadingMsgs(true)
+    setMessages([])
 
-    setMessages((prev) => [...prev, newMessage]);
-    setMessageText('');
-  };
+    // Load history first
+    getMessages(selected.id, token)
+      .then(data => setMessages(data.messages))
+      .catch(err => console.error(err.message))
 
-  return (
+
+
+    // Connect socket and join room
+    const s = getSocket(token)
+
+    // JOIN THE ROOM
+    s.emit('join_booking', selected.id)
+
+    // LISTEN FOR NEW MESSAGE
+    s.on('new_message', (message) => {
+      setMessages(prev => [...prev, message])
+    })
+
+    // CLEANUP WHEN LEAVING PAGE
+    return () => {
+      s.emit('leave_booking', selected.id)
+      s.off('new_message')
+    }
+  }, [token, selected]);
+
+  // AUTO SCROLL TO BOTTOM WHEN NEW MESSAGE ARRIVES
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth'})
+  }, [messages])
+
+  // HANDLE SEND MESSAGE
+  const handleSend = () => {
+    if (!messageText.trim() || !selected || !token) return
+
+    const s = getSocket(token)
+    s.emit('send_message', {
+      bookingId: selected.id,
+      message_text: messageText
+    })
+
+    setMessageText('')
+  }
+  
+return (
     <main className="flex flex-col justify-center p-1 min-h-screen text-black bg-slate-300">
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-[360px_1fr]">
-        
-        {/* Left: conversations */}
-        <aside className="border-r border-slate-200 bg-white">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-[360px_1fr]" style={{ height: '95vh' }}>
+
+        {/* ── Left: conversations list ── */}
+        <aside className="border-r border-slate-200 bg-white overflow-y-auto">
           <div className="p-5 border-b border-slate-200">
             <h1 className="text-2xl font-bold text-slate-900">Messages</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              All your conversations
-            </p>
+            <p className="text-sm text-slate-500 mt-1">All your conversations</p>
           </div>
 
           <div className="p-3 space-y-2">
-            {conversations.map((conversation) => (
+            {bookings.length === 0 && (
+              <p className="text-center text-slate-400 py-10">
+                No conversations yet
+              </p>
+            )}
+            {bookings.map((booking) => (
               <button
-                key={conversation.id}
-                onClick={() => handleSelectConversation(conversation)}
+                key={booking.id}
+                onClick={() => setSelected(booking)}
                 className={`w-full text-left rounded-2xl p-4 transition ${
-                  selectedConversation?.id === conversation.id
+                  selected?.id === booking.id
                     ? 'bg-blue-50 border border-blue-200'
                     : 'hover:bg-slate-50 border border-transparent'
                 }`}
               >
                 <div className="flex justify-between gap-3">
                   <div>
-                    <h2 className="font-semibold text-slate-900">
-                      {conversation.job_title}
+                    <h2 className="font-semibold text-slate-900 truncate">
+                      {booking.title}
                     </h2>
                     <p className="text-sm text-slate-500">
-                      {conversation.other_user_name}
+                      {booking.provider_name}
                     </p>
                   </div>
-
-                  <span className="text-xs text-slate-400">
-                    {conversation.last_message_at}
+                  <span className={`text-xs px-2 py-1 rounded-full h-fit ${
+                    booking.status === 'confirmed'  ? 'bg-yellow-100 text-yellow-700' :
+                    booking.status === 'in_progress' ? 'bg-green-100 text-green-700'  :
+                    'bg-gray-100 text-gray-700'
+                  }`}>
+                    {booking.status}
                   </span>
                 </div>
-
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-sm text-slate-500 truncate max-w-[230px]">
-                    {conversation.last_message}
-                  </p>
-
-                  {conversation.unread_count > 0 && (
-                    <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center">
-                      {conversation.unread_count}
-                    </span>
-                  )}
-                </div>
+                <p className="text-xs text-slate-400 mt-1">
+                  {new Date(booking.created_at).toLocaleDateString()}
+                </p>
               </button>
             ))}
           </div>
         </aside>
 
-        {/* Right: specific messages */}
-        <section className="flex-1">
-          {selectedConversation ? (
-            <div className='flex'>
-                <div className='w-full'>
-                    {/* Chat header */}
-                    <div className="md:p-5 border-b border-slate-200 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-xl font-bold text-slate-900">
-                                {selectedConversation.job_title}
-                            </h2>
-                            <p className="text-sm text-slate-500">
-                                Chat with {selectedConversation.other_user_name}
-                            </p>
-                        </div>
-
-                        <button className="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-sm font-medium">
-                            View Job
-                        </button>
-                    </div>
-
-                    {/* Messages */}
-                    <div className="flex-1 h-[80vh] p-5 space-y-5 overflow-y-auto bg-slate-200">
-                        {messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={`flex ${
-                            message.is_me ? 'justify-end' : 'justify-start'
-                            }`}
-                        >
-                            <div
-                            className={`max-w-[75%] rounded-2xl px-4 py-3 shadow-sm ${
-                                message.is_me
-                                ? 'bg-blue-600 text-white rounded-br-sm'
-                                : 'bg-white text-slate-800 border border-slate-200 rounded-bl-sm'
-                            }`}
-                            >
-                            <p className="text-sm">{message.content}</p>
-                            <p
-                                className={`text-xs mt-2 ${
-                                message.is_me ? 'text-blue-100' : 'text-slate-400'
-                                }`}
-                            >
-                                {message.created_at}
-                            </p>
-                            </div>
-                        </div>
-                        ))}
-                    </div>
-
-                    {/* Input */}
-                    <div className="p-4 border-t border-slate-200 bg-white">
-                        <div className="flex gap-3">
-                            <input
-                                value={messageText}
-                                onChange={(e) => setMessageText(e.target.value)}
-                                onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSendMessage();
-                                }}
-                                placeholder="Type a message..."
-                                className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                            />
-
-                            <button
-                                onClick={handleSendMessage}
-                                className="px-6 py-3 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-                            >
-                                Send
-                            </button>
-                        </div>
-                    </div>
-
+        {/* ── Right: chat window ── */}
+        <section className="flex flex-col overflow-hidden">
+          {selected ? (
+            <>
+              {/* Chat header */}
+              <div className="p-5 border-b border-slate-200 flex items-center justify-between shrink-0">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {selected.title}
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    Chat with {selected.provider_name}
+                  </p>
                 </div>
-               <div className='md:flex hidden w-2/5 h-auto border-l border-slate-200 rounded-r-xl '>
-                    <aside className=''>
-                        <h1 className='text-center'>Job detail</h1>
-                    </aside>
-               </div>
-                
-            </div>
+                <span className="text-sm text-slate-500">
+                  {selected.price} • {selected.estimated_time}
+                </span>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50">
+                {loadingMsgs && (
+                  <p className="text-center text-slate-400">Loading messages...</p>
+                )}
+                {!loadingMsgs && messages.length === 0 && (
+                  <p className="text-center text-slate-400 mt-10">
+                    No messages yet — say hello! 👋
+                  </p>
+                )}
+                {messages.map((msg) => {
+                  const isMe = msg.sender_id === user?.id
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
+                    >
+                      {!isMe && (
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-600 mr-2 shrink-0">
+                          {msg.sender_name?.[0] ?? 'P'}
+                        </div>
+                      )}
+                      <div className={`max-w-[70%] rounded-2xl px-4 py-3 shadow-sm ${
+                        isMe
+                          ? 'bg-blue-600 text-white rounded-br-sm'
+                          : 'bg-white text-slate-800 border border-slate-200 rounded-bl-sm'
+                      }`}>
+                        {!isMe && (
+                          <p className="text-xs font-semibold mb-1 text-blue-600">
+                            {msg.sender_name}
+                          </p>
+                        )}
+                        <p className="text-sm">{msg.message_text}</p>
+                        <p className={`text-xs mt-1 ${isMe ? 'text-blue-100' : 'text-slate-400'}`}>
+                          {new Date(msg.created_at).toLocaleTimeString([], {
+                            hour: '2-digit', minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+                {/* Auto scroll target */}
+                <div ref={bottomRef} />
+              </div>
+
+              {/* Input */}
+              <div className="p-4 border-t border-slate-200 bg-white shrink-0">
+                <div className="flex gap-3">
+                  <input
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                    placeholder="Type a message..."
+                    className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 text-black"
+                  />
+                  <button
+                    onClick={handleSend}
+                    disabled={!messageText.trim()}
+                    className="px-6 py-3 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-500">
-              Select a conversation
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-3">
+              <p className="text-4xl">💬</p>
+              <p className="text-lg font-medium">Select a conversation</p>
+              <p className="text-sm">Choose a booking from the left to start chatting</p>
             </div>
           )}
-          
         </section>
-        
+
       </div>
     </main>
-  );
+  )
 }
