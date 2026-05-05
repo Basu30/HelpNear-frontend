@@ -132,16 +132,16 @@ export default function AllJobs() {
                                 </div>
                             </div>
 
-                            <div className="mt-6 flex items-center justify-between">
+                            <div className="mt-6 flex items-center justify-end">
                                 <button onClick={() => router.push(`/dashboard/customer/c_quotes/${job.id}?title=${encodeURIComponent(job.title)}`)} className="px-4 py-2 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-800 transition active:scale-97">
                                     View Details
                                 </button>
 
-                                {job.status === 'open' && (
+                                {/* {job.status === 'open' && (
                                     <button className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium hover:bg-gray-50 transition active:scale-97">
                                         Submut Quote
                                     </button>
-                                )}
+                                )} */}
                                 
                             </div>
                         </div>

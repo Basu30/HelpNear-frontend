@@ -10,21 +10,17 @@ import { getAllCustomers, updateProfile } from "@/services/customer.service"
 
 const Badges = [
     { id: '1', badgeName: 'Reliable'},
-    { id: '2', badgeName: 'Hard Working'},
-    { id: '3', badgeName: 'Detail Oriented'},
-    { id: '4', badgeName: 'On-time'},
+    { id: '2', badgeName: 'Clear Communicator'},
+    { id: '3', badgeName: 'Pays on time'},
+
 ]
 
-const Skills = [
-    { id: 1, name: 'Deep cleaning'},
-   
-    { id: 2, name: 'Kitchen Cleaning'},
-    { id: 3, name: 'Bathroom Sanitization'},
-    { id: 4, name: 'Floor Care'},
-    { id: 5, name: 'Laundry'},
-    { id: 6, name: 'Window Cleaning'},
-    { id: 7, name: 'Organization'},
-
+const Providers = [
+    { id: 1, name: 'Sarah. M', rate: '4.9', img: '/images/Basu3.JPEG'},
+    { id: 2, name: 'Mike. T', rate: '4.6', img: '/images/Basu3.JPEG'},
+    { id: 3,name: 'John. D', rate: '4.7', img: '/images/Basu3.JPEG'},
+    { id: 4, name: 'Clean Team', rate: '4.8', img: '/images/Basu3.JPEG'},
+    { id: 5, name: 'Sarah. M', rate: '4.4', img: '/images/Basu3.JPEG'},
 ]
 
 const Experience = [
@@ -138,12 +134,6 @@ export default function CustomerDashboard(){
                             height={40}
                             className="object-cover w-10 h-10 rounded-full hover:bg-gray-300 active:scale-97  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]"
                         />
-                        {/* <select >
-                            <option>select 1</option>
-                            <option>select 2</option>
-                            <option>select 3</option>
-                            <option>select 4</option>
-                        </select> */}
                     </div>
                 </div>
 
@@ -298,23 +288,31 @@ export default function CustomerDashboard(){
                                
                             </div>
                         </div> 
+                  
+                        {/* Stats */}
+                        <div className="grid grid-cols-4 gap-4 ">
+                            {[
+                                ['12', 'Jobs Posted'],
+                                ['9', 'Jobs Completed'],
+                                ['4.8', 'Average Rating'],
+                                ['5', 'Providers Saved'],
+                            ].map(([value, label]) => (
+                                <div
+                                    key={label}
+                                    className="bg-white rounded-2xl p-1 border border-gray-200 text-center  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]"
+                                >
+                                    <p className="text-2xl font-bold">{value}</p>
+                                    <p className="text-sm text-gray-500 mt-2">{label}</p>
+                                </div>
+                            ))}     
+                        </div> 
+
                         <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
-                            <h1 className="font-bold w-full text-left mb-2">Skills</h1>
-                            <div className="grid grid-cols-4 justify-start w-full">
-                                {Skills.map((s, i) => (
-                                    <div key={i} className="w-max">
-                                        <p className=" bg-gray-200 rounded-2xl px-2 m-1">
-                                            {s.name}
-                                        </p>
-                                    </div>
-                                
-                                ))}
+                            <div className="flex justify-between w-full items-center mb-4 p-2">
+                                <h1 className="font-bold w-full text-left ">Recent Bookings</h1>
+                                <button className="flex w-full justify-end text-blue-800 font-medium hover:text-blue-500 active:scale-98">View all</button>
                             </div>
                            
-                            
-                        </div> 
-                        <div className="flex flex-col justify-center items-center bg-white  border-1 border-gray-200 rounded-2xl p-4 shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
-                            <h1 className="font-bold w-full text-left mb-6">Work Experience</h1>
                             <div className="flex flex-col gap-4 justify-start w-full px-4">
                                 {Experience.map((e, i) => (  
                                     <div key={i} className="flex gap-4 border-b-1 border-gray-300 ">
@@ -390,7 +388,30 @@ export default function CustomerDashboard(){
                             </div>
                            
                         </div> 
-                        <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Availability</div> 
+                        <div className="flex flex-col justify-center items-center bg-white rounded-xl  shadow-[0px_0px_6px_0px_rgba(0,0,0,0.2)]">
+                            <div className="flex justify-between w-full items-center mb-4 p-2">
+                                <h1 className="font-medium w-full text-left ">Saved Providers</h1>
+                                <button className="flex w-full justify-end text-blue-800 font-medium hover:text-blue-500 active:scale-98">View all</button>
+                            </div>
+                            <div className="grid grid-cols-4 gap-6 truncate">
+                                {Providers.slice(1,5).map((p) => (
+                                <div className="">
+                                    <Image 
+                                        src={p.img}
+                                        alt="provider"
+                                        width={60}
+                                        height={60}
+                                        className="object-cover rounded-full w-20 h-20"
+                                    />
+                                    <h1 className="font-medium">{p.name}</h1>
+                                    <span>{p.rate}</span>
+                            </div>
+                            ))}
+                            </div>
+                            
+                            
+                            
+                        </div> 
                         <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Quick Actions</div> 
                         <div className="flex justify-center items-center bg-white  border-1 rounded-xl ">Account Settings</div> 
                     </div>    
@@ -415,225 +436,3 @@ export default function CustomerDashboard(){
     )
 }
 
-// 'use client';
-
-// import Image from 'next/image';
-// import Link from 'next/link';
-
-// export default function CustomerProfilePage() {
-//   return (
-//     <main className="min-h-screen bg-[#f7f9fc] text-[#1f2937] flex">
-      
-      
-
-//       {/* MAIN CONTENT */}
-//       <section className="flex-1 p-8">
-
-//         {/* Top Search */}
-//         <div className="flex justify-between items-center mb-2">
-//           <input
-//             placeholder="Search jobs, services, or providers..."
-//             className="w-[450px] bg-white border border-gray-200 rounded-2xl px-5 py-3 outline-none"
-//           />
-
-//           <div className="flex items-center gap-5">
-//             <button>♡</button>
-//             <button>🔔</button>
-
-//             <Image
-//               src="/images/profile.jpg"
-//               alt="profile"
-//               width={45}
-//               height={45}
-//               className="rounded-full object-cover"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Profile Hero */}
-//         <div className="bg-[#dfeafe] rounded-3xl p-8 flex justify-between items-center mb-8">
-//           <div className="flex items-center gap-6">
-//             <Image
-//               src="/images/profile.jpg"
-//               alt="profile"
-//               width={130}
-//               height={130}
-//               className="rounded-full object-cover border-4 border-white"
-//             />
-
-//             <div>
-//               <h2 className="text-4xl font-bold">Emily Johnson</h2>
-//               <p className="text-gray-600 mt-2">Customer</p>
-//               <p className="text-gray-500 mt-2">
-//                 Vancouver, British Columbia, Canada
-//               </p>
-//               <p className="text-gray-500">
-//                 Member since March 2024
-//               </p>
-//             </div>
-//           </div>
-
-//           <button className="bg-white px-6 py-3 rounded-2xl font-medium border border-gray-200 hover:bg-gray-50">
-//             Edit Profile
-//           </button>
-//         </div>
-
-//         {/* Tabs */}
-//         <div className="flex gap-10 border-b border-gray-200 mb-8">
-//           {[
-//             'Overview',
-//             'My Bookings',
-//             'Saved',
-//             'Reviews',
-//             'Payment & Wallet',
-//           ].map((tab, index) => (
-//             <button
-//               key={tab}
-//               className={`pb-4 font-medium ${
-//                 index === 0
-//                   ? 'text-blue-600 border-b-2 border-blue-600'
-//                   : 'text-gray-500'
-//               }`}
-//             >
-//               {tab}
-//             </button>
-//           ))}
-//         </div>
-
-//         {/* Grid Layout */}
-//         <div className="grid grid-cols-[2fr_1fr] gap-6">
-
-//           {/* LEFT COLUMN */}
-//           <div className="space-y-6">
-
-//             {/* About Me */}
-//             <div className="bg-white rounded-3xl p-6 border border-gray-200">
-//               <h3 className="text-xl font-bold mb-4">About Me</h3>
-//               <p className="text-gray-600 leading-8">
-//                 I’m a busy professional who values reliable and
-//                 high-quality service. I use JobConnect to find trusted
-//                 workers for home, cleaning, repairs, and more.
-//               </p>
-//             </div>
-
-//             {/* Stats */}
-//             <div className="grid grid-cols-4 gap-4">
-//               {[
-//                 ['12', 'Jobs Posted'],
-//                 ['9', 'Jobs Completed'],
-//                 ['4.8', 'Average Rating'],
-//                 ['5', 'Providers Saved'],
-//               ].map(([value, label]) => (
-//                 <div
-//                   key={label}
-//                   className="bg-white rounded-2xl p-1 border border-gray-200 text-center"
-//                 >
-//                   <p className="text-2xl font-bold">{value}</p>
-//                   <p className="text-sm text-gray-500 mt-2">{label}</p>
-//                 </div>
-//               ))}
-//             </div>
-
-//             {/* Recent Bookings */}
-//             <div className="bg-white rounded-3xl p-6 border border-gray-200">
-//               <div className="flex justify-between mb-6">
-//                 <h3 className="text-xl font-bold">Recent Bookings</h3>
-//                 <Link href="#" className="text-blue-600 font-medium">
-//                   View All
-//                 </Link>
-//               </div>
-
-//               <div className="space-y-5">
-//                 {[
-//                   ['House Deep Cleaning', '$120'],
-//                   ['Bathroom Repair', '$90'],
-//                   ['Furniture Assembly', '$75'],
-//                 ].map(([title, price]) => (
-//                   <div
-//                     key={title}
-//                     className="flex justify-between items-center"
-//                   >
-//                     <div>
-//                       <h4 className="font-semibold">{title}</h4>
-//                       <p className="text-sm text-gray-500">Completed</p>
-//                     </div>
-
-//                     <div className="flex items-center gap-5">
-//                       <p className="font-bold">{price}</p>
-//                       <button className="border px-4 py-2 rounded-xl">
-//                         View Details
-//                       </button>
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-
-//           </div>
-
-//           {/* RIGHT COLUMN */}
-//           <div className="space-y-6">
-
-//             {/* Account Summary */}
-//             {/* <div className="bg-white rounded-3xl p-6 border border-gray-200">
-//               <h3 className="text-xl font-bold mb-5">Account Summary</h3>
-
-//               <div className="grid grid-cols-1 gap-4">
-//                 {[
-//                   ['$340.50', 'Wallet Balance'],
-//                   ['2', 'Active Bookings'],
-//                   ['4.8', 'Average Rating'],
-//                 ].map(([value, label]) => (
-//                   <div
-//                     key={label}
-//                     className="bg-gray-50 rounded-2xl p-4"
-//                   >
-//                     <p className="text-2xl font-bold">{value}</p>
-//                     <p className="text-sm text-gray-500">{label}</p>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div> */}
-
-//             {/* Payment Methods */}
-//             {/* <div className="bg-white rounded-3xl p-6 border border-gray-200">
-//               <h3 className="text-xl font-bold mb-4">Payment Methods</h3>
-
-//               <div className="space-y-4">
-//                 <div className="border rounded-xl p-4">
-//                   Visa •••• 4242
-//                 </div>
-//                 <div className="border rounded-xl p-4">
-//                   Mastercard •••• 8888
-//                 </div>
-//               </div>
-//             </div> */}
-
-//             {/* Settings */}
-//             <div className="bg-white rounded-3xl p-6 border border-gray-200">
-//               <h3 className="text-xl font-bold mb-4">Account Settings</h3>
-
-//               <div className="space-y-4">
-//                 {[
-//                   'Personal Information',
-//                   'Notification Preferences',
-//                   'Security & Privacy',
-//                   'Help & Support',
-//                 ].map((setting) => (
-//                   <button
-//                     key={setting}
-//                     className="w-full flex justify-between py-3 border-b text-left"
-//                   >
-//                     <span>{setting}</span>
-//                     <span>›</span>
-//                   </button>
-//                 ))}
-//               </div>
-//             </div>
-
-//           </div>
-//         </div>
-//       </section>
-//     </main>
-//   );
-// }
