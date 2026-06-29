@@ -3,12 +3,12 @@ import Link from "next/link";
 
 
 const jobs = [
-  { title: 'House Deep Cleaning', category: 'Cleaning', location: 'Calgary, AB', price: '$120 - $180', time: '2h ago', image: '/images/cleaning.jpg' },
-  { title: 'Kitchen Faucet Fix', category: 'Plumbing', location: 'Okotoks, AB', price: '$90 - $140', time: '3h ago', image: '/images/plumbing.jpg' },
-  { title: 'Furniture Assembly', category: 'Handyman', location: 'Calgary, AB', price: '$60 - $100', time: '4h ago', image: '/images/handyman.jpg' },
-  { title: 'Wall Painting', category: 'Painting', location: 'Chestermere, AB', price: '$200 - $350', time: '5h ago', image: '/images/painting.jpg' },
-  { title: 'Lawn Mowing', category: 'Yard Work', location: 'Calgary, AB', price: '$40 - $70', time: '6h ago', image: '/images/lawn.jpg' },
-  { title: 'Bathroom Repair', category: 'Plumbing', location: 'Airdrie, AB', price: '$80 - $120', time: '7h ago', image: '/images/bathroom.jpg' },
+  { title: 'House Deep Cleaning', category: 'Cleaning', location: 'Calgary, AB', price: '120 - 180', time: '2h ago', image: '/images/cleaning.jpg' },
+  { title: 'Kitchen Faucet Fix', category: 'Plumbing', location: 'Okotoks, AB', price: '90 - 140', time: '3h ago', image: '/images/plumbing.jpg' },
+  { title: 'Furniture Assembly', category: 'Handyman', location: 'Calgary, AB', price: '60 - 100', time: '4h ago', image: '/images/handyman.jpg' },
+  { title: 'Wall Painting', category: 'Painting', location: 'Chestermere, AB', price: '200 - 350', time: '5h ago', image: '/images/painting.jpg' },
+  { title: 'Lawn Mowing', category: 'Yard Work', location: 'Calgary, AB', price: '40 - 70', time: '6h ago', image: '/images/lawn.jpg' },
+  { title: 'Bathroom Repair', category: 'Plumbing', location: 'Airdrie, AB', price: '80 - 120', time: '7h ago', image: '/images/bathroom.jpg' },
 ];
 
 const providers = [
@@ -249,7 +249,7 @@ export default function JobsPage () {
                       alt={job.title} 
                       width={50}
                       height={50}
-                      className="md:w-40 md:h-auto object-cover border border-black rounded-xl" 
+                      className="md:w-40 md:h-auto object-cover border border-black rounded-md" 
                     />
                   </div>
 
@@ -270,7 +270,7 @@ export default function JobsPage () {
 
                 </div>
                 <div className="flex justify-between mt-2 items-center">
-                  <span>⌚ {job.time ?? 'Any time'}</span>
+                  <span>⌚{job.time ?? 'Any time'}</span>
                   <span>5 Quotes</span>
                   <button className="border border-blue-500 text-blue-500 py-1 px-2 rounded-md hover:bg-blue-400 hover:text-white active:scale-98">
                     View Details
