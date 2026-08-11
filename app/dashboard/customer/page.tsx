@@ -395,7 +395,7 @@ export default function CustomerDashboard(){
                             </div>
                             <div className="grid grid-cols-4 gap-6 truncate">
                                 {Providers.slice(1,5).map((p) => (
-                                <div className="">
+                                <div key={p.id} className="">
                                     <Image 
                                         src={p.img}
                                         alt="provider"
@@ -405,7 +405,7 @@ export default function CustomerDashboard(){
                                     />
                                     <h1 className="font-medium">{p.name}</h1>
                                     <span>{p.rate}</span>
-                            </div>
+                                </div>
                             ))}
                             </div>
                             

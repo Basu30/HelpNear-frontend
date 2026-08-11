@@ -43,7 +43,7 @@ export default function JobsPage () {
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      <header className="h-20 border-b border-slate-200 px-6 md:px-14 flex items-center justify-between">
+      {/* <header className="h-20 border-b border-slate-200 px-6 md:px-14 flex items-center justify-between">
         <Link href={'/home'} className="flex items-center gap-2 font-bold text-xl">
           <div className="w-20 bg-blue-600 rounded-xl flex items-center justify-center text-white">
             <Image
@@ -71,10 +71,14 @@ export default function JobsPage () {
           </Link>
         </div>
 
-      </header>
+      </header> */}
 
-      <section className="px-8 mt-4 items-center  border-slate-200">
-        <div className="flex justify-between">
+      <section className="px-8 items-center border-slate-200 ">
+        <div className="flex justify-between gap-6 pt-6">
+          <Link href={'#'} className="active:scale-97 transition duration-150">
+            <div className="items-center flex text-[3rem] active:bg-slate-100 rounded-full">🏠</div>
+          </Link>
+          
           <div className="w-full">
             <h1 className="text-2xl md:text-3xl font-bold leading-tight">
               Browse Jobs 
@@ -100,7 +104,7 @@ export default function JobsPage () {
               />
                 
             </div>
-            <div className=" flex md:py-2 text-black rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-300 ">
+            <div className="flex md:py-2 text-black rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-300 ">
               <Image
                 src={'/images/pin.png'}
                 alt="Location"
@@ -123,8 +127,8 @@ export default function JobsPage () {
         </div>
       </section>
 
-      <div className="md:flex hidden mx-8 my-6 gap-6">
-        <section id='providers' className="flex flex-col justify-between items-center py-2 px-2 w-2/9 border rounded-lg border-slate-300 ">
+      <div className="md:flex hidden mx-8 my-8 gap-6  ">
+        <section id='providers' className="flex flex-col justify-between items-center py-4 px-2 w-2/9 border rounded-lg border-slate-300 ">
           
           <div className="flex justify-between items-center w-full mb-6">
             <div className="flex justify-between w-full">
@@ -234,7 +238,8 @@ export default function JobsPage () {
             </div>
 
           </div>
-
+          
+          {/* JOB CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:grid-cols-3 gap-5">
             {jobs.map((job) => (
               <div key={job.title} className=" bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-4">
@@ -249,14 +254,14 @@ export default function JobsPage () {
                       alt={job.title} 
                       width={50}
                       height={50}
-                      className="md:w-40 md:h-auto object-cover border border-black rounded-md" 
+                      className="md:w-40 md:h-auto object-cover rounded-md shadow-[0px_0px_6px_2px_rgba(0,0,0,0.1)]" 
                     />
                   </div>
 
                   <div className="p-4">
                     <h3 className="font-bold mt-3 md:text-lg">{job.title}</h3>
-                    <p className="text-xs text-slate-500 mt-1">📍 {job.location}</p>
-                    <p className="text-xs text-slate-500 mt-1"> {job.location}</p>
+                    <p className="text-xs text-slate-500 mt-2 mb-8">📍 {job.location}</p>
+                    {/* <p className="text-xs text-slate-500 mt-1"> {job.location}</p> */}
                     <p className="text-green-600 font-bold mt-3 text-[1.4rem]">${job.price} </p>
                     {/* <p className="text-xs text-slate-400 mt-3">📅 {job.preferred_date ? new Date(job.preferred_date).toLocaleDateString('en-CA', {
                         year: 'numeric',
