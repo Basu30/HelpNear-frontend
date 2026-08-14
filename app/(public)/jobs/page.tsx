@@ -75,8 +75,15 @@ export default function JobsPage () {
 
       <section className="px-8 items-center border-slate-200 ">
         <div className="flex justify-between gap-6 pt-6">
-          <Link href={'#'} className="active:scale-97 transition duration-150">
-            <div className="items-center flex text-[3rem] active:bg-slate-100 rounded-full">🏠</div>
+          <Link href={'#'} className="">
+            <div className="items-center flex w-full border border-black hover:shadow-xl">
+              <Image
+                src={'/images/home button.png'}
+                alt="home"
+                width={100}
+                height={50}
+                />
+            </div>
           </Link>
           
           <div className="w-full">
@@ -242,7 +249,7 @@ export default function JobsPage () {
           {/* JOB CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:grid-cols-3 gap-5">
             {jobs.map((job) => (
-              <div key={job.title} className=" bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-4">
+              <div key={job.title} className="bg-slate-100 border-slate-50 border hover:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.2)] transition duration-500  border-slate-200 rounded-xl overflow-hidden shadow-sm p-4">
                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1  rounded-lg ">
                   {job.category}
                 </span>
@@ -277,7 +284,7 @@ export default function JobsPage () {
                 <div className="flex justify-between mt-2 items-center">
                   <span>⌚{job.time ?? 'Any time'}</span>
                   <span>5 Quotes</span>
-                  <button className="border border-blue-500 text-blue-500 py-1 px-2 rounded-md hover:bg-blue-400 hover:text-white active:scale-98">
+                  <button className="borde border-blue-300 bg-slate-300 py-1 px-2 rounded-md hover:bg-blue-400 transition duration-600 hover:text-white active:scale-98">
                     View Details
                   </button>
                 </div>
