@@ -1,5 +1,10 @@
+'use client';
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { getAllJobs } from "@/services/jobs.service";
+import { JobRequest } from "@/types/job";
 
 
 const jobs = [
@@ -41,6 +46,37 @@ const categories = [
 
 export default function JobsPage () {
 
+  const { isLoading } = useAuth();
+  
+  const [jobs, setJobs] = useState<JobRequest[]>([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+
+  useEffect(() => {
+        if (isLoading) return;
+
+        const fetchAllJobs = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const data = await getAllJobs();
+                setJobs(data.jobs || []);
+                setCount(data.count ?? data.jobs.length);
+            } catch (err) {
+                console.error(err)
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+
+        fetchAllJobs();
+    }, [isLoading]);
+  
+
   return (
     <main className="min-h-screen bg-white text-slate-900">
       {/* <header className="h-20 border-b border-slate-200 px-6 md:px-14 flex items-center justify-between">
@@ -75,7 +111,7 @@ export default function JobsPage () {
 
       <section className="px-8 items-center border-slate-200 ">
         <div className="flex justify-between gap-6 pt-6">
-          <Link href={'#'} className="">
+          <Link href={'/'} className="">
             <div className="items-center flex w-full border border-black hover:shadow-xl">
               <Image
                 src={'/images/home button.png'}
@@ -232,12 +268,12 @@ export default function JobsPage () {
               </nav>
 
             <div className="flex justify-between items-center w-full">
-              <p className="text-[1.2rem] font-medium">128 jobs found</p>
+              <p className="text-[1.2rem] font-medium">{jobs.length} jobs found</p>
               <div className="flex items-center ">
                 <p className="text-[1.2rem] font-medium">Sort by:</p>
                 <select className="border rounded py-1 px-2 ml-2 font-medium">
                   <option>Newest First</option>
-                  <option>Oldest First</option>
+                  <option>Oldest First</option>\
                   <option>Other</option>
               </select>
               </div>
@@ -251,7 +287,7 @@ export default function JobsPage () {
             {jobs.map((job) => (
               <div key={job.title} className="bg-slate-100 border-slate-50 border hover:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.2)] transition duration-500  border-slate-200 rounded-xl overflow-hidden shadow-sm p-4">
                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1  rounded-lg ">
-                  {job.category}
+                  {job.category_name}
                 </span>
                 <span></span>
                 <div className="flex border-b border-slate-300">
@@ -267,14 +303,22 @@ export default function JobsPage () {
 
                   <div className="p-4">
                     <h3 className="font-bold mt-3 md:text-lg">{job.title}</h3>
-                    <p className="text-xs text-slate-500 mt-2 mb-8">📍 {job.location}</p>
+                    <p className="text-xs text-slate-500 mt-2 mb-8">📍{job.district}, {job.city}  </p>
                     {/* <p className="text-xs text-slate-500 mt-1"> {job.location}</p> */}
-                    <p className="text-green-600 font-bold mt-3 text-[1.4rem]">${job.price} </p>
-                    {/* <p className="text-xs text-slate-400 mt-3">📅 {job.preferred_date ? new Date(job.preferred_date).toLocaleDateString('en-CA', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }) : 'Flexible'}</p> */}
+                    <p className="text-green-600 font-bold mt-3 text-[1.4rem]">
+                      {job.budget_min != null && job.budget_max != null
+                        ? `${new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                          maximumFractionDigits: 0,
+                        }).format(job.budget_min)} - ${new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                          maximumFractionDigits: 0,
+                        }).format(job.budget_max)}` 
+                        : 'Budget not specified'}
+                    </p>
+                    
                     <p className="text-xs text-slate-400 mt-3"></p>
                   </div>
 
@@ -282,7 +326,15 @@ export default function JobsPage () {
 
                 </div>
                 <div className="flex justify-between mt-2 items-center">
-                  <span>⌚{job.time ?? 'Any time'}</span>
+                  <span>
+                    ⌚{job.preferred_date 
+                      ? new Date(job.created_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        timeZone: 'UTC',})
+                      : 'Any time'}
+                  </span>
                   <span>5 Quotes</span>
                   <button className="borde border-blue-300 bg-slate-300 py-1 px-2 rounded-md hover:bg-blue-400 transition duration-600 hover:text-white active:scale-98">
                     View Details

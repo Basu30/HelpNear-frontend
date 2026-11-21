@@ -38,7 +38,12 @@ export default function CustomerQuote() {
 
         try {
             await acceptQuote(quoteId, token!)
-            router.push('/dashboard/customer/booking')
+            setQuotes(current => current.map(quote => 
+                quote.id === quoteId 
+                ? { ...quote, status: 'pending' }
+                : quote
+            ))
+            // router.push('/dashboard/customer/booking')
         } catch (err) {
             if (err instanceof Error) setError(err.message)
         } finally {
@@ -154,11 +159,18 @@ export default function CustomerQuote() {
                                         View Details
                                     </button>
 
-                                    <button 
+                                    {quote.status === 'pending' || accepting === quote.id ? (
+                                        <button
+                                            disabled
+                                            className="px-5 py-3 rounded-2xl bg-slate-200 text-slate-600 font-medium">
+                                            Pending
+                                        </button>
+                                        ) : (
+                                        <button 
                                         onClick={() => handleAccept(quote.id)}
                                         className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition shadow-sm active:scale-98">
                                         Accept Quote
-                                    </button>
+                                    </button>)}
                                 </div>
                            
                             </div> 

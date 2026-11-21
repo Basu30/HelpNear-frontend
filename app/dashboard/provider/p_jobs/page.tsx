@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getProviderJobs } from "@/services/provider.service";
+import { getAllJobs } from "@/services/jobs.service";
 import type { JobRequest } from "@/types/job";
 
 const ProviderJobs = () => {
@@ -16,35 +17,51 @@ const ProviderJobs = () => {
     useEffect(() => {
         if (isLoading) return;
 
-        if (!token) {
-            setError("You must be logged in to view jobs.");
-            setLoading(false);
-            return;
-        }
+        // if (!token) {
+        //     setError("You must be logged in to view jobs.");
+        //     setLoading(false);
+        //     return;
+        // }
 
-        const fetchJobs = async () => {
+        // const fetchJobs = async () => {
+        //     try {
+        //         setLoading(true);
+        //         setError(null);
+
+        //         const data = await getProviderJobs(token);
+        //         setJobs(data.jobs || []);
+        //         setCount(data.count ?? data.jobs.length);
+        //     } catch (err) {
+        //         console.error(err);
+
+        //         if (err instanceof Error) {
+        //             setError(err.message);
+        //         } else {
+        //             setError("Failed to load provider jobs.");
+        //         }
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // };
+
+        const fetchAllJobs = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const data = await getProviderJobs(token);
+                const data = await getAllJobs();
                 setJobs(data.jobs || []);
                 setCount(data.count ?? data.jobs.length);
             } catch (err) {
-                console.error(err);
-
-                if (err instanceof Error) {
-                    setError(err.message);
-                } else {
-                    setError("Failed to load provider jobs.");
-                }
-            } finally {
-                setLoading(false);
+                console.error(err)
             }
-        };
+            finally {
+                setLoading(false)
+            }
+        }
 
-        fetchJobs();
-    }, [isLoading, token]);
+        fetchAllJobs();
+    }, [isLoading]);
 
     const statusColors: Record<string, string> = {
         open: 'bg-green-100 text-green-700',
@@ -104,23 +121,27 @@ const ProviderJobs = () => {
                                 className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between"
                             >
                                 <div className="space-y-4">
-                                    <div className="flex items-start justify-between gap-3">
+                                    <div className="flex flex-col justify-between gap-1">
+                                        <p className="flex w-full justify-between">
+                                            <span className="bg-gray-400 rounded-full px-2 text-white">{job.category_name}</span>
+
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                                                    statusColors[job.status] || 'bg-gray-100 text-gray-700'
+                                                }`}
+                                            >  
+                                                {job.status}
+                                            </span>
+                                        </p>
+                                        
                                         <h2 className="text-xl font-semibold text-gray-900 leading-tight">
                                             {job.title}
                                         </h2>
-
-                                        <span
-                                            className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                                                statusColors[job.status] || 'bg-gray-100 text-gray-700'
-                                            }`}
-                                        >
-                                            {job.status}
-                                        </span>
                                     </div>
 
-                                    <p className="text-sm text-gray-600 line-clamp-3">
+                                    {/* <p className="text-sm text-gray-600 line-clamp-3">
                                         {job.description || "No description provided."}
-                                    </p>
+                                    </p> */}
 
                                     <div className="grid grid-cols-2 gap-3 text-sm">
                                         <div className="bg-gray-100 rounded-xl p-3">
@@ -165,16 +186,16 @@ const ProviderJobs = () => {
                                     </div>
                                 </div>
 
-                                <div className="mt-6 flex items-center justify-between">
-                                    <button className="px-4 py-2 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-800 transition">
+                                <div className="mt-6 flex items-center justify-end">
+                                    <button className="px-4 py-2 rounded-xl bg-blue-500 text-white text-sm font-medium active:bg-blue-600 transition active:scale-97">
                                         View Details
                                     </button>
 
-                                    {job.status === 'open' && (
+                                    {/* {job.status === 'open' && (
                                         <button className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium hover:bg-gray-50 transition">
                                             Send Quote
                                         </button>
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         ))}

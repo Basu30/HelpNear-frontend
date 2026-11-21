@@ -180,12 +180,16 @@ export default function HomePage() {
                     <h3 className="font-bold mt-3 text-sm">{job.title}</h3>
                     <p className="text-xs text-slate-500 mt-1">📍 {job.city}</p>
                     <p className="text-green-600 font-bold mt-3 text-[1.4rem]">${job.budget_min} - {job.budget_max}</p>
-                    <p className="text-xs text-slate-400 mt-3">📅 {job.preferred_date ? new Date(job.preferred_date).toLocaleDateString('en-CA', {
+                    <p className="text-xs text-slate-400 mt-3">📅 {job.created_at ? new Date(job.created_at).toLocaleDateString('en-CA', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
                     }) : 'Flexible'}</p>
-                    <p className="text-xs text-slate-400 mt-3">⌚ {job.preferred_time ?? 'Any time'}</p>
+                    <p className="text-xs text-slate-400 mt-3">⌚ {job.preferred_date ? new Date(job.preferred_date).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    }) : 'Any time'}</p>
                 </div>
             </div>
           ))}
